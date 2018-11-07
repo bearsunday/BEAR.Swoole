@@ -27,7 +27,7 @@ exit((require dirname(__DIR__) . '/vendor/bear/swoole/bootstrap.php')(
 
 ## 🚀 Execute
 
-You can run an BEAR.Sunday application with Swoole using the following command:
+You can run a BEAR.Sunday application with Swoole using the following command:
 
 
     php bin/swoole.php
