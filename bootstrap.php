@@ -1,14 +1,12 @@
 <?php
 
-use BEAR\Package\Bootstrap;
+use BEAR\Package\AppInjector;
 use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Extension\Router\RouterMatch;
-use BEAR\Sunday\Extension\Transfer\TransferInterface;
 use BEAR\Sunday\Provide\Error\VndError;
+use BEAR\Swoole\App;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
-
-$responder = require __DIR__ . 'responder.php';
 
 return function (string $context, string $name, string $ip, string $port) use ($responder) : int {
     if (! class_exists('swoole_http_server')) {
@@ -18,11 +16,14 @@ return function (string $context, string $name, string $ip, string $port) use ($
     $http->on("start", function ($server) use ($ip, $port) {
         echo "Swoole http server is started at http://{$ip}:{$port}" . PHP_EOL;
     });
-    $app = (new Bootstrap)->getApp($name, $context);
-    $http->on("request", function (Request $request, Response $response) use ($app, $responder) {
-        if ($app->httpCache->isNotModified($request->server)) {
-            $response->status(304);
-            $response->end('');
+    $injector = new AppInjector($name, $context);
+    /* @var App $app */
+    $app = $injector->getInstance(App::class);
+    $http->on("request", function (Request $request, Response $response) use ($app) {
+        if ($app->httpCache->isNotModified($request->header)) {
+            $app->httpCache->transfer($response);
+
+            return;
         }
         $method = strtolower($request->server['request_method']);
         $query = $method === 'get' ? $request->get : $request->post;
@@ -30,13 +31,9 @@ return function (string $context, string $name, string $ip, string $port) use ($
         try {
             /* @var ResourceObject $ro */
             $ro = $app->resource->{$method}->uri($path)($query);
-            $responder->setResponse($response);
-            $ro->transfer($responder, $_SERVER);
+            ($app->responder)($ro, $response);
         } catch (\Exception $e) {
-            echo (string) $e . PHP_EOL; // on server screen
-            $match = new RouterMatch;
-            [$match->method, $match->path, $match->query] = [$method, $path, $query];
-            (new VndError($responder))->handle($e, $match)->transfer();
+            $app->error->transfer($e, $request, $response);
         }
     });
     $http->start();
