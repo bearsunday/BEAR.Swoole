@@ -1,0 +1,15 @@
+{
+    "name": "bear/swoole",
+    "description": "Swoole script for BEAR.Sunday",
+    "type": "library",
+    "require-dev": {
+        "eaglewu/swoole-ide-helper": "dev-master"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Akihito Koriyama",
+            "email": "akihito.koriyama@gmail.com"
+        }
+    ]
+}
