@@ -17,10 +17,10 @@ Place the entry script file at `bin/swoole.php` with IP address and port number.
 <?php
 require dirname(__DIR__) . '/autoload.php';
 exit((require dirname(__DIR__) . '/vendor/bear/swoole/bootstrap.php')(
-    'prod-hal-app',
-    'BEAR\Skeleton',
-    '127.0.0.1',
-    '8080'
+    'prod-hal-app',       // context
+    'MyVendor\MyProject', // application name
+    '127.0.0.1',          // IP
+    '8080'                // port
 ));
 ```
 
