@@ -2,6 +2,9 @@
     "name": "bear/swoole",
     "description": "Swoole script for BEAR.Sunday",
     "type": "library",
+    "require": {
+        "php": ">=7.0.0"
+    },
     "require-dev": {
         "eaglewu/swoole-ide-helper": "dev-master"
     },
