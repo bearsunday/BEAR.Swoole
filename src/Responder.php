@@ -5,17 +5,28 @@ declare(strict_types=1);
 namespace BEAR\Swoole;
 
 use BEAR\Resource\ResourceObject;
+use BEAR\Resource\TransferInterface;
 use Swoole\Http\Response;
 
-final class Responder
+final class Responder implements TransferInterface
 {
-    public function __invoke(ResourceObject $ro, Response $response)
+    /**
+     * @var Response
+     */
+    private $response;
+
+    public function setResponse(Response $response)
+    {
+        $this->response = $response;
+    }
+
+    public function __invoke(ResourceObject $ro, array $server)
     {
         $ro->toString();
         foreach ($ro->headers as $key => $value) {
-            $response->header($key, (string)$value);
+            $this->response->header($key, (string)$value);
         }
-        $response->status($ro->code);
-        $response->end($ro->view);
+        $this->response->status($ro->code);
+        $this->response->end($ro->view);
     }
 }

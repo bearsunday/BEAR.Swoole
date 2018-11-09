@@ -29,7 +29,8 @@ return function (string $context, string $name, string $ip, string $port) : int 
         try {
             /* @var ResourceObject $ro */
             $ro = $app->resource->{$match->method}->uri($match->path)($match->query);
-            ($app->responder)($ro, $response);
+            $app->responder->setResponse($response);
+            $ro->transfer($app->responder, []);
         } catch (\Exception $e) {
             $app->error->transfer($e, $request, $response);
         }
