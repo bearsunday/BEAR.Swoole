@@ -12,13 +12,13 @@ return function (string $context, string $name, string $ip, string $port) : int 
         throw new \RuntimeException('Swoole is not installed. See https://github.com/swoole/swoole-src/wiki/Installing');
     }
     $http = new swoole_http_server($ip, $port);
-    $http->on("start", function () use ($ip, $port) {
+    $http->on('start', function () use ($ip, $port) {
         echo "Swoole http server is started at http://{$ip}:{$port}" . PHP_EOL;
     });
     $injector = new AppInjector($name, $context);
     /* @var App $app */
     $app = $injector->getInstance(App::class);
-    $http->on("request", function (Request $request, Response $response) use ($app) {
+    $http->on('request', function (Request $request, Response $response) use ($app) {
         if ($app->httpCache->isNotModified($request->header)) {
             $app->httpCache->transfer($response);
 
