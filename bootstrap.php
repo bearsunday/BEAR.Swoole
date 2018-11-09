@@ -2,18 +2,17 @@
 
 use BEAR\Package\AppInjector;
 use BEAR\Resource\ResourceObject;
-use BEAR\Sunday\Extension\Router\RouterMatch;
-use BEAR\Sunday\Provide\Error\VndError;
 use BEAR\Swoole\App;
+use BEAR\Swoole\WebContext;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 
-return function (string $context, string $name, string $ip, string $port) use ($responder) : int {
+return function (string $context, string $name, string $ip, string $port) : int {
     if (! class_exists('swoole_http_server')) {
         throw new \RuntimeException('Swoole is not installed. See https://github.com/swoole/swoole-src/wiki/Installing');
     }
     $http = new swoole_http_server($ip, $port);
-    $http->on("start", function ($server) use ($ip, $port) {
+    $http->on("start", function () use ($ip, $port) {
         echo "Swoole http server is started at http://{$ip}:{$port}" . PHP_EOL;
     });
     $injector = new AppInjector($name, $context);
@@ -25,12 +24,11 @@ return function (string $context, string $name, string $ip, string $port) use ($
 
             return;
         }
-        $method = strtolower($request->server['request_method']);
-        $query = $method === 'get' ? $request->get : $request->post;
-        $path = 'page://self'. $request->server['request_uri'];
+        $web = new WebContext($request);
+        $match = $app->router->match($web->globals, $web->server);
         try {
             /* @var ResourceObject $ro */
-            $ro = $app->resource->{$method}->uri($path)($query);
+            $ro = $app->resource->{$match->method}->uri($match->path)($match->query);
             ($app->responder)($ro, $response);
         } catch (\Exception $e) {
             $app->error->transfer($e, $request, $response);
