@@ -41,8 +41,7 @@ final class App extends AbstractApp
         Responder $responder,
         ResourceInterface $resource,
         Error $error
-    )
-    {
+    ) {
         $this->httpCache = $httpCache;
         $this->router = $router;
         $this->responder = $responder;
