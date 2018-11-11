@@ -8,10 +8,18 @@ use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
 
-return function (string $context, string $name, string $ip, int $port, int $mode = SWOOLE_BASE, int $sockType = SWOOLE_SOCK_TCP) : int {
-    if (! class_exists('swoole_http_server')) {
-        throw new \RuntimeException('Swoole is not installed. See https://github.com/swoole/swoole-src/wiki/Installing');
-    }
+if (! class_exists(Server::class)) {
+    throw new \RuntimeException('Swoole is not installed. See https://github.com/swoole/swoole-src/wiki/Installing');
+}
+
+return function (
+    string $context,
+    string $name,
+    string $ip,
+    int $port,
+    int $mode = SWOOLE_BASE,
+    int $sockType = SWOOLE_SOCK_TCP
+) : int {
     $http = new Server($ip, $port, $mode, $sockType);
     $http->on('start', function () use ($ip, $port) {
         echo "Swoole http server is started at http://{$ip}:{$port}" . PHP_EOL;
