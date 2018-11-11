@@ -31,3 +31,45 @@ You can run a BEAR.Sunday application with Swoole using the following command:
 
 
     php bin/swoole.php
+
+## 🚀 Benchmark
+
+Test with Intel Core i5 3.8 GHz iMac (Retina 5K, 27-inch, 2017)
+
+* PHP 7.2
+ * 24G Memory
+ * Swoole 4.2.7
+
+Benchmarking Tool: [wrk](https://github.com/wg/wrk)
+
+**Apache 2.4**
+
+```
+wrk -t4 -c400 -d10s http://127.0.0.1/
+
+Running 10s test @ http://127.0.0.1/
+  4 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   109.92ms  160.99ms   1.04s    85.01%
+    Req/Sec     1.50k     1.24k    3.90k    59.26%
+  32984 requests in 10.11s, 6.89MB read
+  Socket errors: connect 151, read 81, write 0, timeout 0
+Requests/sec:   3262.07
+Transfer/sec:    698.03KB
+```
+
+**Swoole**
+
+```
+wrk -t4 -c400 -d10s http://127.0.0.1:8080/
+
+Running 10s test @ http://127.0.0.1:8080/
+  4 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    11.80ms    8.96ms 101.05ms   80.07%
+    Req/Sec     5.37k     3.32k    9.87k    55.75%
+  213769 requests in 10.02s, 41.59MB read
+  Socket errors: connect 151, read 68, write 2, timeout 0
+Requests/sec:  21344.14
+Transfer/sec:      4.15MB
+```
