@@ -18,9 +18,11 @@ return function (
     string $ip,
     int $port,
     int $mode = SWOOLE_BASE,
-    int $sockType = SWOOLE_SOCK_TCP
+    int $sockType = SWOOLE_SOCK_TCP,
+    array $settings = ['worker_num' => 4]
 ) : int {
     $http = new Server($ip, $port, $mode, $sockType);
+    $http->set($settings);
     $http->on('start', function () use ($ip, $port) {
         echo "Swoole http server is started at http://{$ip}:{$port}" . PHP_EOL;
     });
