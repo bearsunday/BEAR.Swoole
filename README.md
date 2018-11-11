@@ -38,7 +38,6 @@ Test with Intel Core i5 3.8 GHz iMac (Retina 5K, 27-inch, 2017)
 
 * PHP 7.2
  * 24G Memory
- * Swoole 4.2.7
 
 Benchmarking Tool: [wrk](https://github.com/wg/wrk)
 
@@ -58,7 +57,7 @@ Requests/sec:   3262.07
 Transfer/sec:    698.03KB
 ```
 
-**Swoole**
+**Swoole 4.2.7**
 
 ```
 wrk -t4 -c400 -d10s http://127.0.0.1:8080/
