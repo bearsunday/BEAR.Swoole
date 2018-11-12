@@ -3,10 +3,14 @@
     "description": "Swoole script for BEAR.Sunday",
     "type": "library",
     "require": {
-        "php": ">=7.0.0"
+        "php": ">=7.1.0",
+        "ray/psr7-module": "^1.0",
+        "fastd/http": "^3.2"
     },
     "require-dev": {
-        "eaglewu/swoole-ide-helper": "dev-master"
+        "eaglewu/swoole-ide-helper": "dev-master",
+        "bear/package": "^1.9",
+        "phpunit/phpunit": "^7.4"
     },
     "license": "MIT",
     "authors": [
@@ -17,7 +21,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "BEAR\\Swoole\\": "src/"
+            "BEAR\\Swoole\\": ["src/"]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BEAR\\Swoole\\": ["tests/"]
         }
     }
 }
