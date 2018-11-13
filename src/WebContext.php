@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BEAR\Swoole;
 
-use function file_put_contents;
 use Swoole\Http\Request;
 
 /**
