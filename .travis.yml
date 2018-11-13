@@ -20,17 +20,14 @@ before_install:
   - composer validate
 install:
   - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then composer require --dev phpstan/phpstan-shim ^0.9 friendsofphp/php-cs-fixer ^2.13; fi
-  - printf "\n" | pecl install swoole
-  - echo 'extension = "swoole.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
+  - yes '' | pecl install swoole
   - php -m
   - composer update $DEPENDENCIES
   - php tests/bin/swoole.php &
-  - sleep 10
 script:
   - ./vendor/bin/phpunit $COVERAGE;
   - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then ./vendor/bin/php-cs-fixer --dry-run -v fix; fi
   - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then ./vendor/bin/phpstan analyse -l max -c phpstan.neon src tests --no-progress --no-interaction; fi
   - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then phpenv config-add /tmp/xdebug.ini; ./vendor/bin/phpunit --coverage-clover=coverage.clover; else ./vendor/bin/phpunit; fi
-  - curl -i  http://127.0.0.1:8080/
 after_script:
 - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
