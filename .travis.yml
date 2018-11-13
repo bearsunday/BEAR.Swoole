@@ -20,7 +20,7 @@ before_install:
 - composer validate
 install:
 - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then composer require --dev phpstan/phpstan-shim ^0.9 friendsofphp/php-cs-fixer ^2.0; fi
-- pecl install -f swoole
+- printf "\n" | pecl install swoole
 - echo 'extension = "swoole.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
 - php -m
 - composer update $DEPENDENCIES
