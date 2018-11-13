@@ -35,6 +35,7 @@ return function (
 
             return;
         }
+        $app->requestContainer->set($request);
         $web = new WebContext($request);
         $match = $app->router->match($web->globals, $web->server);
         try {
