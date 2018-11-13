@@ -25,7 +25,7 @@ install:
   - php -m
   - composer update $DEPENDENCIES
   - php tests/bin/swoole.php &
-  - sleep 5
+  - sleep 10
 script:
   - ./vendor/bin/phpunit $COVERAGE;
   - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then ./vendor/bin/php-cs-fixer --dry-run -v fix; fi
