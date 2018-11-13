@@ -5,6 +5,7 @@ declare(strict_types=1);
 use BEAR\Package\AppInjector;
 use BEAR\Resource\ResourceObject;
 use BEAR\Swoole\App;
+use BEAR\Swoole\Psr7SwooleModule;
 use BEAR\Swoole\WebContext;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -30,7 +31,7 @@ return function (
     });
     $injector = new AppInjector($name, $context);
     /* @var App $app */
-    $app = $injector->getInstance(App::class);
+    $app = $injector->getOverrideInstance(new Psr7SwooleModule, App::class);
     $http->on('request', function (Request $request, Response $response) use ($app) {
         if ($app->httpCache->isNotModified($request->header)) {
             $app->httpCache->transfer($response);
