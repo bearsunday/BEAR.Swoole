@@ -4,6 +4,7 @@
     "type": "library",
     "require": {
         "php": ">=7.1.0",
+        "ext-swoole": "^2.0",
         "ray/psr7-module": "^1.0",
         "fastd/http": "^3.2"
     },
