@@ -28,6 +28,7 @@ install:
   - phpenv config-add tests/swoole.ini
 before_script:
   - php tests/bin/swoole.php &
+  - sleep 10
 script:
   - if [[ $TRAVIS_PHP_VERSION = '7.2' && DEPENDENCIES = '' ]]; then ./vendor/bin/php-cs-fixer --dry-run -v fix; fi
   - if [[ $TRAVIS_PHP_VERSION = '7.2' && DEPENDENCIES = '' ]]; then ./vendor/bin/phpstan analyse -l max -c phpstan.neon src tests --no-progress --no-interaction; fi
