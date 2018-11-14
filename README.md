@@ -20,7 +20,7 @@ exit((require dirname(__DIR__) . '/vendor/bear/swoole/bootstrap.php')(
     'prod-hal-app',       // context
     'MyVendor\MyProject', // application name
     '127.0.0.1',          // IP
-    '8080'                // port
+    8080                  // port
 ));
 ```
 

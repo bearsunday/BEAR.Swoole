@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BEAR\Swoole;
 
-use function file_put_contents;
 use Swoole\Http\Request;
 
 /**
@@ -34,7 +33,7 @@ final class WebContext
             'REQUEST_METHOD' => $request->server['request_method'],
             'REQUEST_URI' => $request->server['request_uri'],
             'CONTENT_TYPE' => $request->header['content-type'] ?? '',
-            'HTTP_RAW_POST_DATA' => $request->rawContent()
+            'HTTP_RAW_POST_DATA' => $request->rawcontent()
         ];
         $this->globals = [
             '_GET' => $request->get ?? [],

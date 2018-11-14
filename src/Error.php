@@ -10,10 +10,10 @@ use BEAR\Resource\Exception\ResourceNotFoundException as NotFound;
 use BEAR\Resource\Exception\ServerErrorException as ServerError;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
-use function get_class;
-use function json_encode;
 use const JSON_PRETTY_PRINT;
 use const PHP_EOL;
+use function get_class;
+use function json_encode;
 
 final class Error
 {
@@ -24,7 +24,7 @@ final class Error
         if ($this->isCodeExists($e)) {
             $code = $e->getCode();
             $response->status($code);
-            $response->end(sprintf("%s %s\n", (string)$code, (new Code)->statusText[$code]));
+            $response->end(sprintf("%s %s\n", (string) $code, (new Code)->statusText[$code]));
 
             return;
         }
@@ -47,7 +47,7 @@ final class Error
 
     private function isCodeExists(\Exception $e) : bool
     {
-        if (!($e instanceof NotFound) && !($e instanceof BadRequest) && !($e instanceof ServerError)) {
+        if (! ($e instanceof NotFound) && ! ($e instanceof BadRequest) && ! ($e instanceof ServerError)) {
             return false;
         }
 

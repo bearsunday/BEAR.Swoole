@@ -15,18 +15,18 @@ final class Responder implements TransferInterface
      */
     private $response;
 
-    public function setResponse(Response $response)
-    {
-        $this->response = $response;
-    }
-
     public function __invoke(ResourceObject $ro, array $server)
     {
         $ro->toString();
         foreach ($ro->headers as $key => $value) {
-            $this->response->header($key, (string)$value);
+            $this->response->header($key, (string) $value);
         }
         $this->response->status($ro->code);
         $this->response->end($ro->view);
+    }
+
+    public function setResponse(Response $response)
+    {
+        $this->response = $response;
     }
 }
