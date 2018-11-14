@@ -11,7 +11,8 @@
         "eaglewu/swoole-ide-helper": "dev-master",
         "bear/package": "^1.9",
         "phpunit/phpunit": "^7.4",
-        "bear/skeleton": "^1.6"
+        "bear/skeleton": "^1.6",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "license": "MIT",
     "authors": [
