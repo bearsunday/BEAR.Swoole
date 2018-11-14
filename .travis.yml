@@ -25,7 +25,6 @@ install:
   - php -m
   - composer update $DEPENDENCIES
   - MODULES="swoole.so:swoole" ./travis/modulecache.sh
-  - phpenv config-add tests/swoole.ini
 before_script:
   - php tests/bin/swoole.php &
   - sleep 10
