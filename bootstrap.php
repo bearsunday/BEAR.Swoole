@@ -6,7 +6,7 @@ use BEAR\Package\AppInjector;
 use BEAR\Resource\ResourceObject;
 use BEAR\Swoole\App;
 use BEAR\Swoole\Psr7SwooleModule;
-use BEAR\Swoole\WebContext;
+use BEAR\Swoole\SuperGlobals;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
@@ -32,15 +32,16 @@ return function (
     $injector = new AppInjector($name, $context);
     /* @var App $app */
     $app = $injector->getOverrideInstance(new Psr7SwooleModule, App::class);
-    $http->on('request', function (Request $request, Response $response) use ($app) {
+    $superGlobals = new SuperGlobals;
+    $http->on('request', function (Request $request, Response $response) use ($app, $superGlobals) {
         if ($app->httpCache->isNotModified($request->header)) {
             $app->httpCache->transfer($response);
 
             return;
         }
         $app->requestContainer->set($request);
-        $web = new WebContext($request);
-        $match = $app->router->match($web->globals, $web->server);
+        $superGlobals($request);
+        $match = $app->router->match($GLOBALS, $_SERVER);
         try {
             /* @var ResourceObject $ro */
             $ro = $app->resource->{$match->method}->uri($match->path)($match->query);

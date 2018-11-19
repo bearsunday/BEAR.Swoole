@@ -22,9 +22,9 @@ before_install:
   - composer validate
 install:
   - if [[ $TRAVIS_PHP_VERSION = '7.2' && DEPENDENCIES = '' ]]; then composer require --dev phpstan/phpstan-shim ^0.9 friendsofphp/php-cs-fixer ^2.13; fi
+  - MODULES="swoole.so:swoole" ./travis/modulecache.sh
   - php -m
   - composer update $DEPENDENCIES
-  - MODULES="swoole.so:swoole" ./travis/modulecache.sh
 before_script:
   - php tests/bin/swoole.php &
   - sleep 10
