@@ -10,18 +10,8 @@ use Ray\HttpMessage\RequestProviderInterface;
 
 final class SwooleRequestProvider implements RequestProviderInterface
 {
-    /**
-     * @var SwooleRequestContainer
-     */
-    private $container;
-
-    public function __construct(SwooleRequestContainer $container)
-    {
-        $this->container = $container;
-    }
-
     public function get() : ServerRequestInterface
     {
-        return SwooleServerRequest::createServerRequestFromSwoole($this->container->get());
+        return SwooleServerRequest::createServerRequestFromSwoole(SuperGlobals::$swooleRequest);
     }
 }

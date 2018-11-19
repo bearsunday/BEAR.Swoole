@@ -39,7 +39,6 @@ return function (
 
             return;
         }
-        $app->requestContainer->set($request);
         $superGlobals($request);
         $match = $app->router->match($GLOBALS, $_SERVER);
         try {

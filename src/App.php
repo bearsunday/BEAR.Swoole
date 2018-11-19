@@ -35,24 +35,17 @@ final class App extends AbstractApp
      */
     public $error;
 
-    /**
-     * @var SwooleRequestContainer
-     */
-    public $requestContainer;
-
     public function __construct(
         HttpCache $httpCache,
         RouterInterface $router,
         Responder $responder,
         ResourceInterface $resource,
-        Error $error,
-        SwooleRequestContainer $swoolRequestContainer
+        Error $error
     ) {
         $this->httpCache = $httpCache;
         $this->router = $router;
         $this->responder = $responder;
         $this->resource = $resource;
         $this->error = $error;
-        $this->requestContainer = $swoolRequestContainer;
     }
 }
