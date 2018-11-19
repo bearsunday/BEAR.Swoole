@@ -15,7 +15,6 @@ class Psr7SwooleModuleTest extends TestCase
     {
         $injector = new Injector(new Psr7SwooleModule);
         $requestProvider = $injector->getInstance(SwooleRequestProvider::class);
-        $swooleContainer = $injector->getInstance(SwooleRequestContainer::class);
         $request = new Request;
         $request->get = [];
         $request->post = [];
@@ -27,7 +26,7 @@ class Psr7SwooleModuleTest extends TestCase
         $request->header = [
         ];
         $request->cookie = [];
-        $swooleContainer->set($request);
+        (new SuperGlobals)($request);
         $request = @$requestProvider->get();
         $this->assertInstanceOf(RequestInterface::class, $request);
     }

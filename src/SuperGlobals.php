@@ -9,32 +9,22 @@ use Swoole\Http\Request;
 final class SuperGlobals
 {
     /**
-     * Swoole Server
-     *
-     * @var array
+     * @var Request
      */
-    public static $swooleServer;
-
-    /**
-     * Swoole Header
-     *
-     * @var array
-     */
-    public static $swooleHeader;
+    public static $swooleRequest;
 
     /**
      * Set properties and $GLOBALS for conventional PHP application
      */
     public function __invoke(Request $request)
     {
+        self::$swooleRequest = $request;
         if (isset($request->server)) {
-            self::$swooleServer = $request->server;
             foreach ($request->server as $key => $value) {
                 $_SERVER[strtoupper($key)] = $value;
             }
         }
         if (isset($request->header)) {
-            self::$swooleHeader = $request->header;
             foreach ($request->header as $key => $value) {
                 $headerKey = 'HTTP_' . strtoupper(str_replace('-', '_', $key));
                 $_SERVER[$headerKey] = $value;
