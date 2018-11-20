@@ -14,11 +14,6 @@ final class HttpCache
      */
     private $storage;
 
-    /**
-     * @var Response
-     */
-    private $response;
-
     public function __construct(ResourceStorageInterface $storage)
     {
         $this->storage = $storage;
