@@ -64,4 +64,29 @@ class BootstrapTest extends TestCase
 }
 ', (string) $response->getBody());
     }
+
+    /**
+     * test @ CookieParam, @ FormParam, @ QueryParam, @ ServerParam annotated web context injection
+     */
+    public function testPsr7ServerRequest()
+    {
+        $jar = CookieJar::fromArray([
+            'c' => 'cookie_value',
+        ], '127.0.0.1');
+        $response = $this->client->post('/psr7?q=query_value', [
+            'cookies' => $jar,
+            'form_params' => ['f' => 'form_value'],
+            'headers' => ['x-my-header' => 'header_value']
+        ]);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('{
+    "cookie": "cookie_value",
+    "form": "form_value",
+    "query": "query_value",
+    "header": [
+        "header_value"
+    ]
+}
+', (string) $response->getBody());
+    }
 }
