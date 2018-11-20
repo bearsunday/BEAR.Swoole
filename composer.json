@@ -29,7 +29,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "BEAR\\Swoole\\": ["tests/"]
+            "BEAR\\Swoole\\": ["tests/"],
+            "BEAR\\Skeleton\\": ["tests/Fake/src/"]
         }
     }
 }
