@@ -5,7 +5,7 @@ declare(strict_types=1);
 use BEAR\Package\AppInjector;
 use BEAR\Resource\ResourceObject;
 use BEAR\Swoole\App;
-use BEAR\Swoole\Psr7SwooleModule;
+use BEAR\Swoole\SwooleModule;
 use BEAR\Swoole\SuperGlobals;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -31,7 +31,7 @@ return function (
     });
     $injector = new AppInjector($name, $context);
     /* @var App $app */
-    $app = $injector->getOverrideInstance(new Psr7SwooleModule, App::class);
+    $app = $injector->getOverrideInstance(new SwooleModule, App::class);
     $superGlobals = new SuperGlobals;
     $http->on('request', function (Request $request, Response $response) use ($app, $superGlobals) {
         if ($app->httpCache->isNotModified($request->header)) {

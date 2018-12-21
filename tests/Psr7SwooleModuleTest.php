@@ -13,7 +13,7 @@ class Psr7SwooleModuleTest extends TestCase
 {
     public function testPsr7SwooleModule()
     {
-        $injector = new Injector(new Psr7SwooleModule);
+        $injector = new Injector(new SwooleModule);
         $requestProvider = $injector->getInstance(SwooleRequestProvider::class);
         $request = new Request;
         $request->get = [];
