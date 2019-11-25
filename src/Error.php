@@ -35,7 +35,7 @@ final class Error
     private function log(Request $request, \Exception $e)
     {
         error_log(
-            json_encode(
+            (string) json_encode(
                 [
                     'code' => $e->getCode(),
                     'class' => get_class($e),
