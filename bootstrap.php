@@ -51,4 +51,6 @@ return function (
         }
     });
     $http->start();
+
+    return 0;
 };
