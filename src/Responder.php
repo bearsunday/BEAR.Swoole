@@ -17,6 +17,7 @@ final class Responder implements TransferInterface
 
     public function __invoke(ResourceObject $ro, array $server)
     {
+        unset($server);
         $ro->toString();
         foreach ($ro->headers as $key => $value) {
             $this->response->header($key, (string) $value);

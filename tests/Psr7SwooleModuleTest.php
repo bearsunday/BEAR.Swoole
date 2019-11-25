@@ -11,7 +11,7 @@ use Swoole\Http\Request;
 
 class Psr7SwooleModuleTest extends TestCase
 {
-    public function testPsr7SwooleModule()
+    public function testPsr7SwooleModule() : void
     {
         $injector = new Injector(new SwooleModule);
         $requestProvider = $injector->getInstance(SwooleRequestProvider::class);

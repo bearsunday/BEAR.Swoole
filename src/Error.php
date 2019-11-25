@@ -37,14 +37,15 @@ final class Error
         error_log(
             json_encode(
                 [
-                'code' => $e->getCode(),
-                'class' => get_class($e),
-                'message' => $e->getMessage(),
-                'method' => $request->server['request_method'],
-                'uri' => $request->server['request_uri'],
-                'get' => $request->get,
-                'post' => $request->post
-                ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+                    'code' => $e->getCode(),
+                    'class' => get_class($e),
+                    'message' => $e->getMessage(),
+                    'method' => $request->server['request_method'],
+                    'uri' => $request->server['request_uri'],
+                    'get' => $request->get,
+                    'post' => $request->post
+                ],
+                JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
             )
         );
     }
