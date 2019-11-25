@@ -43,6 +43,8 @@ jobs:
     before_script:
     - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{.disabled,}
     - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
+    - php tests/bin/swoole.php &
+    - sleep 10
     script:
     - ./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml
     after_script:
