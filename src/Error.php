@@ -8,12 +8,12 @@ use BEAR\Resource\Code;
 use BEAR\Resource\Exception\BadRequestException as BadRequest;
 use BEAR\Resource\Exception\ResourceNotFoundException as NotFound;
 use BEAR\Resource\Exception\ServerErrorException as ServerError;
-use Swoole\Http\Request;
-use Swoole\Http\Response;
-use const JSON_PRETTY_PRINT;
-use const PHP_EOL;
 use function get_class;
 use function json_encode;
+use const JSON_PRETTY_PRINT;
+use const PHP_EOL;
+use Swoole\Http\Request;
+use Swoole\Http\Response;
 
 final class Error
 {
@@ -34,15 +34,20 @@ final class Error
 
     private function log(Request $request, \Exception $e)
     {
-        error_log(json_encode([
-            'code' => $e->getCode(),
-            'class' => get_class($e),
-            'message' => $e->getMessage(),
-            'method' => $request->server['request_method'],
-            'uri' => $request->server['request_uri'],
-            'get' => $request->get,
-            'post' => $request->post
-        ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        error_log(
+            (string) json_encode(
+                [
+                    'code' => $e->getCode(),
+                    'class' => get_class($e),
+                    'message' => $e->getMessage(),
+                    'method' => $request->server['request_method'],
+                    'uri' => $request->server['request_uri'],
+                    'get' => $request->get,
+                    'post' => $request->post
+                ],
+                JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+            )
+        );
     }
 
     private function isCodeExists(\Exception $e) : bool

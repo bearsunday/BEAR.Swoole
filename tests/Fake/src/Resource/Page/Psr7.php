@@ -23,10 +23,11 @@ class Psr7 extends ResourceObject
     public function onPost()
     {
         $serverReuquest = $this->requestProvider->get();
-        \var_dump( $serverReuquest->getHeaders());
+        $body = $serverReuquest->getParsedBody();
+        assert(is_array($body));
         $this->body = [
             'cookie' => $serverReuquest->getCookieParams()['c'],
-            'form' => $serverReuquest->getParsedBody()['f'],
+            'form' => $body['f'],
             'query' => $serverReuquest->getQueryParams()['q'],
             'header' => $serverReuquest->getHeader('x_my_header')
         ];
