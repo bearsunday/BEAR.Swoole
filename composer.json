@@ -6,16 +6,16 @@
         "php": "^7.3 || ^8.0",
         "ext-json": "*",
         "ext-swoole": ">=4.0.0",
-        "ray/psr7-module": "^1.3",
-        "fastd/http": "^3.2",
         "bear/app-meta": "^1.6",
-        "psr/http-message": "^1.0",
-        "ray/di": "^2.11",
+        "bear/query-repository": "^1.6",
         "bear/resource": "^1.15",
         "bear/sunday": "^1.5",
-        "doctrine/cache": "^1.10",
         "doctrine/annotations": "^1.11",
-        "bear/query-repository": "^1.6"
+        "doctrine/cache": "^1.10",
+        "fastd/http": "^3.2",
+        "psr/http-message": "^1.0",
+        "ray/di": "^2.11",
+        "ray/psr7-module": "^1.3"
     },
     "require-dev": {
         "eaglewu/swoole-ide-helper": "dev-master",
@@ -58,5 +58,8 @@
         "metrics": ["./vendor/bin/phpmetrics --report-html=build/metrics --exclude=Exception --junit=build/junit.xml src"],
         "phpmd": ["./vendor/bin/phpmd --exclude src/Annotation src text ./phpmd.xml"],
         "build": ["@cs", "@sa", "@pcov", "@metrics"]
+    },
+    "config": {
+        "sort-packages": true
     }
 }
