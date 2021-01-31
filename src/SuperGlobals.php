@@ -16,7 +16,7 @@ final class SuperGlobals
     /**
      * Set properties and $GLOBALS for conventional PHP application
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): void
     {
         self::$swooleRequest = $request;
         if (isset($request->server)) {

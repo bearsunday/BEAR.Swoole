@@ -3,18 +3,29 @@
     "description": "Swoole script for BEAR.Sunday",
     "type": "library",
     "require": {
-        "php": ">=7.1.0",
+        "php": "^7.3 || ^8.0",
+        "ext-json": "*",
         "ext-swoole": ">=4.0.0",
-        "ray/psr7-module": "^1.0",
-        "fastd/http": "^3.2"
+        "bear/app-meta": "^1.6",
+        "bear/query-repository": "^1.6",
+        "bear/resource": "^1.15",
+        "bear/sunday": "^1.5",
+        "doctrine/annotations": "^1.11",
+        "doctrine/cache": "^1.10",
+        "fastd/http": "^3.2",
+        "psr/http-message": "^1.0",
+        "ray/di": "^2.11.3",
+        "ray/psr7-module": "^1.3"
     },
     "require-dev": {
-        "eaglewu/swoole-ide-helper": "dev-master",
+        "bamarni/composer-bin-plugin": "^1.4",
         "bear/package": "^1.9",
-        "phpunit/phpunit": "^7.4",
         "bear/skeleton": "^1.6",
+        "eaglewu/swoole-ide-helper": "dev-master",
         "guzzlehttp/guzzle": "^6.3",
-        "josegonzalez/dotenv": "^3.2"
+        "josegonzalez/dotenv": "^3.2",
+        "phpunit/phpunit": "^9.5",
+        "symfony/process": "^5.0"
     },
     "license": "MIT",
     "authors": [
@@ -35,10 +46,21 @@
         }
     },
     "scripts" :{
-        "test": "./vendor/bin/phpunit",
-        "tests": ["@cs", "@test", "phpstan analyse -l max src tests -c phpstan.neon --no-progress"],
-        "coverage": ["php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"],
-        "cs": ["php-cs-fixer fix -v --dry-run", "phpcs --standard=./phpcs.xml src"],
-        "cs-fix": ["php-cs-fixer fix -v", "phpcbf src"]
+        "post-install-cmd": ["@composer bin all install --ansi"],
+        "post-update-cmd": ["@composer bin all update --ansi"],
+        "test": ["./vendor/bin/phpunit"],
+        "tests": ["@cs", "@test", "@sa"],
+        "coverage": ["php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"],
+        "pcov": ["php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"],
+        "cs": ["phpcs --standard=./phpcs.xml src tests"],
+        "cs-fix": ["./vendor/bin/phpcbf src tests"],
+        "clean": ["./vendor/bin/phpstan clear-result-cache", "./vendor/bin/psalm --clear-cache", "rm -rf tests/tmp/*.php"],
+        "sa": ["./vendor/bin/phpstan analyse -c phpstan.neon"],
+        "metrics": ["./vendor/bin/phpmetrics --report-html=build/metrics --exclude=Exception --junit=build/junit.xml src"],
+        "phpmd": ["./vendor/bin/phpmd --exclude src/Annotation src text ./phpmd.xml"],
+        "build": ["@cs", "@sa", "@pcov", "@metrics"]
+    },
+    "config": {
+        "sort-packages": true
     }
 }

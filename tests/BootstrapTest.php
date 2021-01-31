@@ -23,7 +23,7 @@ class BootstrapTest extends TestCase
         ]);
     }
 
-    public function test200()
+    public function test200(): void
     {
         $response = $this->client->get('/');
         $this->assertSame(200, $response->getStatusCode());
@@ -33,7 +33,7 @@ class BootstrapTest extends TestCase
 ', (string) $response->getBody());
     }
 
-    public function test304()
+    public function test304(): void
     {
         $response1 = $this->client->get('/cache');
         $etag = $response1->getHeader('Etag');
@@ -45,7 +45,7 @@ class BootstrapTest extends TestCase
     /**
      * test @ CookieParam, @ FormParam, @ QueryParam, @ ServerParam annotated web context injection
      */
-    public function testInjectWebContext()
+    public function testInjectWebContext(): void
     {
         $jar = CookieJar::fromArray([
             'c' => 'cookie_value',
@@ -68,7 +68,7 @@ class BootstrapTest extends TestCase
     /**
      * test @ CookieParam, @ FormParam, @ QueryParam, @ ServerParam annotated web context injection
      */
-    public function testPsr7ServerRequest()
+    public function testPsr7ServerRequest(): void
     {
         $jar = CookieJar::fromArray([
             'c' => 'cookie_value',
