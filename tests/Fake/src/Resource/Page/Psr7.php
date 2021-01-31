@@ -1,5 +1,6 @@
 <?php
 namespace BEAR\Skeleton\Resource\Page;
+
 use BEAR\Resource\ResourceObject;
 use Psr\Http\Message\ServerRequestInterface;
 use Ray\HttpMessage\RequestProviderInterface;
@@ -20,7 +21,7 @@ class Psr7 extends ResourceObject
         $this->requestProvider = $requestProvider;
     }
 
-    public function onPost()
+    public function onPost(): self
     {
         $serverReuquest = $this->requestProvider->get();
         $body = $serverReuquest->getParsedBody();

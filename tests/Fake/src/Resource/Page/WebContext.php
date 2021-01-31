@@ -1,5 +1,6 @@
 <?php
 namespace BEAR\Skeleton\Resource\Page;
+
 use BEAR\Resource\ResourceObject;
 use Ray\WebContextParam\Annotation\CookieParam;
 use Ray\WebContextParam\Annotation\FormParam;
@@ -14,7 +15,7 @@ class WebContext extends ResourceObject
      * @QueryParam(param="query", key="q")
      * @ServerParam(param="header", key="HTTP_X_MY_HEADER")
      */
-    public function onPost(string $cookie, string $form, string $query, string $header)
+    public function onPost(string $cookie, string $form, string $query, string $header): ResourceObject
     {
         $this->body = [
             'cookie' => $cookie,

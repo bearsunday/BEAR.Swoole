@@ -26,7 +26,7 @@ final class Responder implements TransferInterface
         $this->response->end($ro->view);
     }
 
-    public function setResponse(Response $response)
+    public function setResponse(Response $response): void
     {
         $this->response = $response;
     }

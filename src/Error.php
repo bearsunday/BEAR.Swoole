@@ -8,6 +8,7 @@ use BEAR\Resource\Code;
 use BEAR\Resource\Exception\BadRequestException as BadRequest;
 use BEAR\Resource\Exception\ResourceNotFoundException as NotFound;
 use BEAR\Resource\Exception\ServerErrorException as ServerError;
+use phpDocumentor\Reflection\DocBlock\Tags\Link;
 use function get_class;
 use function json_encode;
 use const JSON_PRETTY_PRINT;
@@ -17,7 +18,7 @@ use Swoole\Http\Response;
 
 final class Error
 {
-    public function transfer(\Exception $e, Request $request, Response $response)
+    public function transfer(\Exception $e, Request $request, Response $response): void
     {
         $this->log($request, $e);
         $response->header('content-type', 'text/plain');
@@ -32,7 +33,7 @@ final class Error
         $response->end('500 Server Error' . PHP_EOL);
     }
 
-    private function log(Request $request, \Exception $e)
+    private function log(Request $request, \Exception $e): void
     {
         error_log(
             (string) json_encode(
