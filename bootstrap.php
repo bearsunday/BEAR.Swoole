@@ -20,7 +20,7 @@ return function (
     string $name,
     string $ip,
     int $port,
-    int $mode = SWOOLE_BASE,
+    int $mode = SWOOLE_PROCESS,
     int $sockType = SWOOLE_SOCK_TCP,
     array $settings = ['worker_num' => 4]
 ) : int {
