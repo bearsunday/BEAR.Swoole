@@ -24,7 +24,7 @@
         "bear/package": "^1.9",
         "bear/skeleton": "^1.6",
         "eaglewu/swoole-ide-helper": "dev-master",
-        "guzzlehttp/guzzle": "^6.5",
+        "guzzlehttp/guzzle": "^6.5 || ^7.5",
         "josegonzalez/dotenv": "^3.2",
         "phpunit/phpunit": "^9.5",
         "symfony/process": "^5.0"
