@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace BEAR\Swoole;
 
 use BEAR\Resource\ResourceInterface;
-use BEAR\Sunday\Extension\Application\AbstractApp;
+use BEAR\Resource\TransferInterface;
 use BEAR\Sunday\Extension\Router\RouterInterface;
 
-final class App extends AbstractApp
+final class App
 {
     /**
-     * @var HttpCache
+     * @var HttpCacheInterface
      */
     public $httpCache;
 
@@ -21,7 +21,7 @@ final class App extends AbstractApp
     public $router;
 
     /**
-     * @var Responder
+     * @var TransferInterface
      */
     public $responder;
 
@@ -36,9 +36,9 @@ final class App extends AbstractApp
     public $error;
 
     public function __construct(
-        HttpCache $httpCache,
+        HttpCacheInterface $httpCache,
         RouterInterface $router,
-        Responder $responder,
+        TransferInterface $responder,
         ResourceInterface $resource,
         Error $error
     ) {

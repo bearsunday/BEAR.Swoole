@@ -8,7 +8,7 @@ use BEAR\Resource\Code;
 use BEAR\Resource\Exception\BadRequestException as BadRequest;
 use BEAR\Resource\Exception\ResourceNotFoundException as NotFound;
 use BEAR\Resource\Exception\ServerErrorException as ServerError;
-use phpDocumentor\Reflection\DocBlock\Tags\Link;
+use function array_key_exists;
 use function get_class;
 use function json_encode;
 use const JSON_PRETTY_PRINT;
@@ -57,6 +57,6 @@ final class Error
             return false;
         }
 
-        return \array_key_exists($e->getCode(), (new Code)->statusText);
+        return array_key_exists($e->getCode(), (new Code)->statusText);
     }
 }
