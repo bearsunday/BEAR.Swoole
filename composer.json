@@ -4,6 +4,7 @@
     "type": "library",
     "require": {
         "php": "^7.3 || ^8.0",
+        "ext-json": "*",
         "ext-swoole": ">=4.0.0",
         "bear/app-meta": "^1.6",
         "bear/query-repository": "^1.9",
