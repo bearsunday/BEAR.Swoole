@@ -12,6 +12,9 @@ namespace BEAR\Swoole;
 use FastD\Http\ServerRequest;
 use Swoole\Http\Request;
 
+/**
+ * @SuppressWarnings
+ */
 class SwooleServerRequest extends ServerRequest
 {
     public static function createServerRequestFromSwoole(Request $request): ServerRequest
@@ -55,7 +58,7 @@ class SwooleServerRequest extends ServerRequest
 
         $headers = [];
         foreach ($request->header as $name => $value) {
-            $headers[str_replace('-', '_', $name)] = $value;
+            $headers[str_replace('-', '_', (string) $name)] = $value;
         }
 
         $serverRequest = new ServerRequest(
@@ -67,7 +70,7 @@ class SwooleServerRequest extends ServerRequest
         );
         unset($headers);
 
-        $serverRequest->getBody()->write($request->rawContent());
+        $serverRequest->getBody()->write((string) $request->rawContent());
 
         return $serverRequest
             ->withParsedBody($post)
