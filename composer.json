@@ -7,7 +7,7 @@
         "ext-json": "*",
         "ext-swoole": ">=4.0.0",
         "bear/app-meta": "^1.6",
-        "bear/query-repository": "^1.9",
+        "bear/query-repository": "^1.8.4",
         "bear/resource": "^1.15",
         "bear/sunday": "^1.5",
         "doctrine/cache": "^1.10",
