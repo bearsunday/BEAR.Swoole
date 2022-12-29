@@ -19,11 +19,6 @@ final class SwooleServer
      */
     private $process;
 
-    /**
-     * @var string
-     */
-    private $host;
-
     public function __construct(string $phpFile)
     {
         $this->process = new Process([

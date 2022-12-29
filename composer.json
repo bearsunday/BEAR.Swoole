@@ -7,22 +7,24 @@
         "ext-json": "*",
         "ext-swoole": ">=4.0.0",
         "bear/app-meta": "^1.6",
-        "bear/query-repository": "^1.6",
+        "bear/query-repository": "^1.8.4",
         "bear/resource": "^1.15",
         "bear/sunday": "^1.5",
-        "doctrine/annotations": "^1.11",
         "doctrine/cache": "^1.10",
-        "fastd/http": "^3.2",
+        "fastd/http": "5.0.x-dev",
+        "psr/cache": "^1.0 || ^2.0 || ^3.0",
         "psr/http-message": "^1.0",
         "ray/di": "^2.11.3",
-        "ray/psr7-module": "^1.3"
+        "ray/psr-cache-module": "^1.3",
+        "ray/psr7-module": "^1.3",
+        "symfony/cache": "^5.4 || ^6.2"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4",
         "bear/package": "^1.9",
         "bear/skeleton": "^1.6",
         "eaglewu/swoole-ide-helper": "dev-master",
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^6.5 || ^7.5",
         "josegonzalez/dotenv": "^3.2",
         "phpunit/phpunit": "^9.5",
         "symfony/process": "^5.0"
@@ -61,6 +63,15 @@
         "build": ["@cs", "@sa", "@pcov", "@metrics"]
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": true,
+            "forward-command": true
+        }
     }
 }

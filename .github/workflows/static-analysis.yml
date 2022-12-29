@@ -16,7 +16,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
+          php-version: 8.1
           extensions: swoole
           tools: cs2pr
           coverage: none
@@ -48,7 +48,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.1
           extensions: swoole
 
       - name: Get composer cache directory
@@ -66,7 +66,7 @@ jobs:
         run: composer install --no-interaction --no-progress --prefer-dist
 
       - name: Run PHP Mess Detector
-        run: ./vendor/bin/phpmd src text --exclude src/Annotation ./phpmd.xml
+        run: ./vendor/bin/phpmd src text --exclude src/SwooleServerRequest.php ./phpmd.xml
 
   static-analysis-php-metrics:
     name: Static Analysis with PhpMetrics
@@ -78,7 +78,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
+          php-version: 8.1
           extensions: swoole
           coverage: none
 
@@ -102,7 +102,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.1
           extensions: swoole
           coverage: none
 
@@ -113,7 +113,7 @@ jobs:
       - name: Install dependencies
         run: |
           composer install --no-interaction --no-progress --prefer-dist
-          composer require --dev maglnet/composer-require-checker ^3.0
+          composer global require --dev maglnet/composer-require-checker ^3.0
 
       - name: Run composer-require-checker
-        run: ./vendor/bin/composer-require-checker
+        run:  ~/.composer/vendor/bin/composer-require-checker

@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace BEAR\Swoole;
 
 use BEAR\QueryRepository\ResourceStorageInterface;
-use BEAR\Sunday\Extension\Transfer\HttpCacheInterface;
 use Swoole\Http\Response;
 
-final class HttpCache
+final class HttpCache implements HttpCacheInterface
 {
     /**
      * @var ResourceStorageInterface
