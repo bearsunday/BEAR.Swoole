@@ -11,7 +11,7 @@
         "bear/resource": "^1.15",
         "bear/sunday": "^1.5",
         "doctrine/cache": "^1.10",
-        "fastd/http": "^3.2",
+        "fastd/http": "5.0.x-dev",
         "psr/cache": "^1.0 || ^2.0 || ^3.0",
         "psr/http-message": "^1.0",
         "ray/di": "^2.11.3",
