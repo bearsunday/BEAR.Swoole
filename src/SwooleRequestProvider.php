@@ -12,6 +12,6 @@ final class SwooleRequestProvider implements RequestProviderInterface
 {
     public function get() : ServerRequestInterface
     {
-        return SwooleServerRequest::createServerRequestFromSwoole(SuperGlobals::$swooleRequest);
+        return SwooleServerRequest::createServerRequestFromSwoole(SuperGlobals::$swooleRequest); // @phpstan-ignore-line
     }
 }
