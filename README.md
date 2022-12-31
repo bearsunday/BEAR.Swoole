@@ -7,6 +7,7 @@ This library provides the support of Swoole into an BEAR.Sunday application.
 Run the following to install this library:
 
     composer require bear/swoole
+    composer require fastd/http 5.0.x-dev
 
 ## 🚀 Entry Script
 
