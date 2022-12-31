@@ -8,7 +8,6 @@ Run the following to install this library:
 
     composer require bear/swoole
 
-
 ## 🚀 Entry Script
 
 Place the entry script file at `bin/swoole.php` with IP address and port number.
@@ -34,39 +33,38 @@ You can run a BEAR.Sunday application with Swoole using the following command:
 
 ## 🚀 Benchmark
 
-Test with Intel Core i5 3.8 GHz iMac (Retina 5K, 27-inch, 2017)
+Test with MacBook Air M2 2022
 
-* PHP 7.2
- * 24G Memory
+* PHP 8.2
 
 Benchmarking Tool: [wrk](https://github.com/wg/wrk)
 
 **Apache 2.4**
 
 ```
-wrk -t4 -c10 -d10s http://127.0.0.1/
+wrk http://127.0.0.1/
 
 Running 10s test @ http://127.0.0.1/
-  4 threads and 10 connections
+  2 threads and 10 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    17.53ms   35.39ms 252.04ms   87.12%
-    Req/Sec   741.81    351.80     1.57k    65.49%
-  29500 requests in 10.04s, 8.45MB read
-Requests/sec:   2937.46
-Transfer/sec:    861.12KB
+    Latency     2.94ms    1.63ms  45.60ms   95.46%
+    Req/Sec     1.78k    85.91     1.94k    89.00%
+  35369 requests in 10.00s, 6.99MB read
+Requests/sec:   3535.29
+Transfer/sec:    715.29KB
 ```
 
-**Swoole 4.2.7**
+**Swoole 5.0.1**
 
 ```
-wrk -t4 -c10 -d10s http://127.0.0.1:8080/
+wrk http://127.0.0.1:8080/
 
 Running 10s test @ http://127.0.0.1:8080/
-  4 threads and 10 connections
+  2 threads and 10 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   242.94us  180.34us   9.37ms   90.19%
-    Req/Sec     8.45k     2.23k   16.43k    70.05%
-  339739 requests in 10.10s, 64.80MB read
-Requests/sec:  33633.41
-Transfer/sec:      6.42MB
+    Latency    97.58us   26.76us   1.63ms   81.58%
+    Req/Sec    49.89k     2.31k   51.06k    95.54%
+  1002194 requests in 10.10s, 191.15MB read
+Requests/sec:  99230.51
+Transfer/sec:     18.93MB
 ```
