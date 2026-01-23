@@ -1,27 +1,23 @@
 <?php
+
+declare(strict_types=1);
+
 namespace BEAR\Skeleton\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use Psr\Http\Message\ServerRequestInterface;
 use Ray\HttpMessage\RequestProviderInterface;
-use Ray\WebContextParam\Annotation\CookieParam;
-use Ray\WebContextParam\Annotation\FormParam;
-use Ray\WebContextParam\Annotation\QueryParam;
-use Ray\WebContextParam\Annotation\ServerParam;
+
+use function assert;
+use function is_array;
 
 class Psr7 extends ResourceObject
 {
-    /**
-     * @var RequestProviderInterface
-     */
-    private $requestProvider;
-
-    public function __construct(RequestProviderInterface $requestProvider)
-    {
-        $this->requestProvider = $requestProvider;
+    public function __construct(
+        private readonly RequestProviderInterface $requestProvider,
+    ) {
     }
 
-    public function onPost(): self
+    public function onPost(): static
     {
         $serverReuquest = $this->requestProvider->get();
         $body = $serverReuquest->getParsedBody();
@@ -30,7 +26,7 @@ class Psr7 extends ResourceObject
             'cookie' => $serverReuquest->getCookieParams()['c'],
             'form' => $body['f'],
             'query' => $serverReuquest->getQueryParams()['q'],
-            'header' => $serverReuquest->getHeader('x_my_header')
+            'header' => $serverReuquest->getHeader('x_my_header'),
         ];
 
         return $this;

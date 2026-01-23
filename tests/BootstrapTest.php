@@ -7,19 +7,15 @@ namespace BEAR\Swoole;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use PHPUnit\Framework\TestCase;
-use Ray\WebContextParam\Annotation\CookieParam;
 
 class BootstrapTest extends TestCase
 {
-    /**
-     * @var Client
-     */
-    private $client;
+    private Client $client;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->client = new Client([
-            'base_uri' => 'http://127.0.0.1:8088'
+            'base_uri' => 'http://127.0.0.1:8088',
         ]);
     }
 
@@ -42,9 +38,7 @@ class BootstrapTest extends TestCase
         $this->assertSame('', (string) $response2->getBody());
     }
 
-    /**
-     * test @ CookieParam, @ FormParam, @ QueryParam, @ ServerParam annotated web context injection
-     */
+    /** test @CookieParam, @FormParam, @QueryParam, @ServerParam annotated web context injection */
     public function testInjectWebContext(): void
     {
         $jar = CookieJar::fromArray([
@@ -53,7 +47,7 @@ class BootstrapTest extends TestCase
         $response = $this->client->post('/web-context?q=query_value', [
             'cookies' => $jar,
             'form_params' => ['f' => 'form_value'],
-            'headers' => ['x-my-header' => 'header_value']
+            'headers' => ['x-my-header' => 'header_value'],
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('{
@@ -65,9 +59,7 @@ class BootstrapTest extends TestCase
 ', (string) $response->getBody());
     }
 
-    /**
-     * test @ CookieParam, @ FormParam, @ QueryParam, @ ServerParam annotated web context injection
-     */
+    /** test @CookieParam, @FormParam, @QueryParam, @ServerParam annotated web context injection */
     public function testPsr7ServerRequest(): void
     {
         $jar = CookieJar::fromArray([
@@ -76,7 +68,7 @@ class BootstrapTest extends TestCase
         $response = $this->client->post('/psr7?q=query_value', [
             'cookies' => $jar,
             'form_params' => ['f' => 'form_value'],
-            'headers' => ['x-my-header' => 'header_value']
+            'headers' => ['x-my-header' => 'header_value'],
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('{

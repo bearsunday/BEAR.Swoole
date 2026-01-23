@@ -8,44 +8,14 @@ use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\TransferInterface;
 use BEAR\Sunday\Extension\Router\RouterInterface;
 
-final class App
+final readonly class App
 {
-    /**
-     * @var HttpCacheInterface
-     */
-    public $httpCache;
-
-    /**
-     * @var RouterInterface
-     */
-    public $router;
-
-    /**
-     * @var TransferInterface
-     */
-    public $responder;
-
-    /**
-     * @var ResourceInterface
-     */
-    public $resource;
-
-    /**
-     * @var Error
-     */
-    public $error;
-
     public function __construct(
-        HttpCacheInterface $httpCache,
-        RouterInterface $router,
-        TransferInterface $responder,
-        ResourceInterface $resource,
-        Error $error
+        public HttpCacheInterface $httpCache,
+        public RouterInterface $router,
+        public TransferInterface $responder,
+        public ResourceInterface $resource,
+        public Error $error,
     ) {
-        $this->httpCache = $httpCache;
-        $this->router = $router;
-        $this->responder = $responder;
-        $this->resource = $resource;
-        $this->error = $error;
     }
 }

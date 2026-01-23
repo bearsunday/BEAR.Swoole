@@ -6,16 +6,14 @@ namespace BEAR\Swoole;
 
 use Swoole\Http\Request;
 
+use function strtoupper;
+use function str_replace;
+
 final class SuperGlobals
 {
-    /**
-     * @var Request
-     */
-    public static $swooleRequest;
+    public static Request $swooleRequest;
 
-    /**
-     * Set properties and $GLOBALS for conventional PHP application
-     */
+    /** Set properties and $GLOBALS for conventional PHP application */
     public function __invoke(Request $request): void
     {
         self::$swooleRequest = $request;
@@ -24,13 +22,16 @@ final class SuperGlobals
                 $_SERVER[strtoupper($key)] = $value;
             }
         }
+
         if (isset($request->header)) {
             foreach ($request->header as $key => $value) {
                 $headerKey = 'HTTP_' . strtoupper(str_replace('-', '_', $key));
                 $_SERVER[$headerKey] = $value;
             }
         }
+
         $_COOKIE = $request->cookie;
+        $_SERVER['BEAR_RAW_CONTENT'] = (string) $request->rawContent();
         $GLOBALS['_SERVER'] = $_SERVER;
         $GLOBALS['_GET'] = $request->get ?? [];
         $GLOBALS['_POST'] = $request->post ?? [];

@@ -11,11 +11,11 @@ use Swoole\Http\Request;
 
 class Psr7SwooleModuleTest extends TestCase
 {
-    public function testPsr7SwooleModule() : void
+    public function testPsr7SwooleModule(): void
     {
-        $injector = new Injector(new SwooleModule);
+        $injector = new Injector(new SwooleModule());
         $requestProvider = $injector->getInstance(SwooleRequestProvider::class);
-        $request = new Request;
+        $request = new Request();
         $request->get = [];
         $request->post = [];
         $request->server = [
@@ -23,10 +23,9 @@ class Psr7SwooleModuleTest extends TestCase
             'request_uri' => '/',
             'path_info' => '/',
         ];
-        $request->header = [
-        ];
+        $request->header = [];
         $request->cookie = [];
-        (new SuperGlobals)($request);
+        (new SuperGlobals())($request);
         $request = @$requestProvider->get();
         $this->assertInstanceOf(RequestInterface::class, $request);
     }

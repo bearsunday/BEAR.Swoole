@@ -7,9 +7,9 @@ namespace BEAR\Swoole;
 use Psr\Http\Message\ServerRequestInterface;
 use Ray\HttpMessage\RequestProviderInterface;
 
-final class SwooleRequestProvider implements RequestProviderInterface
+final readonly class SwooleRequestProvider implements RequestProviderInterface
 {
-    public function get() : ServerRequestInterface
+    public function get(): ServerRequestInterface
     {
         return SwooleServerRequest::createServerRequestFromSwoole(SuperGlobals::$swooleRequest);
     }
