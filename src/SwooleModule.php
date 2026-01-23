@@ -12,11 +12,10 @@ use Ray\Di\AbstractModule;
 use Ray\Di\Scope;
 use Ray\HttpMessage\RequestProviderInterface;
 use Ray\PsrCacheModule\Annotation\Shared;
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 class SwooleModule extends AbstractModule
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->bind()->annotatedWith('cache_namespace')->toInstance('');
         $this->bind(CacheItemPoolInterface::class)->annotatedWith(Shared::class)->toProvider(CacheProvider::class)->in(Scope::SINGLETON);
