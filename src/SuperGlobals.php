@@ -31,6 +31,7 @@ final class SuperGlobals
         }
 
         $_COOKIE = $request->cookie;
+        $_SERVER['BEAR_RAW_CONTENT'] = (string) $request->rawContent();
         $GLOBALS['_SERVER'] = $_SERVER;
         $GLOBALS['_GET'] = $request->get ?? [];
         $GLOBALS['_POST'] = $request->post ?? [];
