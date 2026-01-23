@@ -13,7 +13,7 @@ use Ray\Di\Scope;
 use Ray\HttpMessage\RequestProviderInterface;
 use Ray\PsrCacheModule\Annotation\Shared;
 
-class SwooleModule extends AbstractModule
+final class SwooleModule extends AbstractModule
 {
     protected function configure(): void
     {

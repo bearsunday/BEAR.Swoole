@@ -8,7 +8,7 @@ use Ray\Di\ProviderInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /** @implements ProviderInterface<ArrayAdapter> */
-class CacheProvider implements ProviderInterface
+final readonly class CacheProvider implements ProviderInterface
 {
     public function get(): ArrayAdapter
     {

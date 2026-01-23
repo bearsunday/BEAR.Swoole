@@ -21,7 +21,7 @@ use const JSON_PRETTY_PRINT;
 use const JSON_UNESCAPED_SLASHES;
 use const PHP_EOL;
 
-final class Error
+final readonly class Error
 {
     public function transfer(Exception $e, Request $request, Response $response): void
     {

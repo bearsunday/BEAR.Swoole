@@ -7,7 +7,7 @@ namespace BEAR\Swoole;
 use Psr\Http\Message\ServerRequestInterface;
 use Ray\HttpMessage\RequestProviderInterface;
 
-final class SwooleRequestProvider implements RequestProviderInterface
+final readonly class SwooleRequestProvider implements RequestProviderInterface
 {
     public function get(): ServerRequestInterface
     {
