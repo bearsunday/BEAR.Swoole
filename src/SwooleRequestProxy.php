@@ -11,7 +11,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use Swoole\Coroutine;
 
-final class SwooleRequestProxy implements ServerRequestInterface
+final readonly class SwooleRequestProxy implements ServerRequestInterface
 {
     public function __construct(
         private readonly SwooleServerRequestConverter $converter,

@@ -49,7 +49,6 @@ final class SwooleRequestProvider implements ProviderInterface, RequestProviderI
         $server = SwooleServerRequestConverter::toGlobals($request);
 
         $context[Request::class] = $request;
-        $context['$_SERVER'] = $server;
 
         return $server;
     }

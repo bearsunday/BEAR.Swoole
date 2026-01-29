@@ -7,7 +7,6 @@ namespace BEAR\Swoole;
 use BEAR\RepositoryModule\Annotation\EtagPool;
 use BEAR\Sunday\Extension\Transfer\TransferInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,7 +28,6 @@ final class SwooleModule extends AbstractModule
         $this->bind()->annotatedWith('cache_namespace')->toInstance('');
         $this->bind(CacheItemPoolInterface::class)->annotatedWith(Shared::class)->toProvider(CacheProvider::class)->in(Scope::SINGLETON);
         $this->bind(CacheItemPoolInterface::class)->annotatedWith(EtagPool::class)->toProvider(CacheProvider::class)->in(Scope::SINGLETON);
-        $this->bind(CacheItemInterface::class)->toProvider(CacheProvider::class);
         $this->bind(HttpCacheInterface::class)->to(HttpCache::class);
         // PSR-17 factories for SwooleServerRequestConverter
         $this->bind(Psr17Factory::class)->in(Scope::SINGLETON);
