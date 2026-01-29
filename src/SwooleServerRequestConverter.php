@@ -120,8 +120,11 @@ final readonly class SwooleServerRequestConverter
     {
         $uri = $this->uriFactory->createUri();
         $uri = $uri->withScheme($this->detectScheme($server));
-        $uri = $this->applyHost($uri, $server);
-        $uri = $this->applyPort($uri, $server);
+        [$uri, $portSet] = $this->applyHost($uri, $server);
+        if (! $portSet) {
+            $uri = $this->applyPort($uri, $server);
+        }
+
         $uri = $this->applyPath($uri, $server);
 
         return $this->applyQuery($uri, $server);
@@ -143,26 +146,32 @@ final readonly class SwooleServerRequestConverter
         return 'http';
     }
 
-    /** @param array<string, mixed> $server */
-    private function applyHost(UriInterface $uri, array $server): UriInterface
+    /**
+     * @param array<string, mixed> $server
+     *
+     * @return array{0: UriInterface, 1: bool} URI and whether port was set from HTTP_HOST
+     */
+    private function applyHost(UriInterface $uri, array $server): array
     {
         $httpHost = $server['HTTP_HOST'] ?? null;
         if (is_scalar($httpHost)) {
             $host = (string) $httpHost;
+            $portSet = false;
             if (str_contains($host, ':')) {
                 [$host, $port] = explode(':', $host, 2);
                 $uri = $uri->withPort((int) $port);
+                $portSet = true;
             }
 
-            return $uri->withHost($host);
+            return [$uri->withHost($host), $portSet];
         }
 
         $serverName = $server['SERVER_NAME'] ?? null;
         if (is_scalar($serverName)) {
-            return $uri->withHost((string) $serverName);
+            return [$uri->withHost((string) $serverName), false];
         }
 
-        return $uri;
+        return [$uri, false];
     }
 
     /** @param array<string, mixed> $server */
