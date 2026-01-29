@@ -14,10 +14,12 @@ final readonly class HttpCache implements HttpCacheInterface
     ) {
     }
 
-    /** @param array<string, string> $server */
+    /** @param array<string, mixed> $server */
     public function isNotModified(array $server): bool
     {
-        return isset($server['if-none-match']) && $this->storage->hasEtag($server['if-none-match']);
+        $etag = $server['HTTP_IF_NONE_MATCH'] ?? null;
+
+        return is_string($etag) && $this->storage->hasEtag($etag);
     }
 
     public function transfer(Response $response): void

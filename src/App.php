@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace BEAR\Swoole;
 
 use BEAR\Resource\ResourceInterface;
-use BEAR\Resource\TransferInterface;
+use BEAR\Sunday\Extension\Transfer\TransferInterface;
 use BEAR\Sunday\Extension\Router\RouterInterface;
 
 final readonly class App
