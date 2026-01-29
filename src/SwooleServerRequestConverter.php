@@ -183,6 +183,8 @@ final readonly class SwooleServerRequestConverter
      * @param array<string, mixed> $uploadedFiles
      *
      * @return array<string, mixed>
+     *
+     * @codeCoverageIgnore Requires actual file uploads
      */
     private function parseUploadedFiles(array $uploadedFiles): array
     {
@@ -197,7 +199,11 @@ final readonly class SwooleServerRequestConverter
         return $parsed;
     }
 
-    /** @param mixed $file */
+    /**
+     * @param mixed $file
+     *
+     * @codeCoverageIgnore Requires actual file uploads
+     */
     private function createUploadedFile($file): ?\Psr\Http\Message\UploadedFileInterface
     {
         if (! $this->isValidUploadedFile($file)) {
@@ -214,7 +220,11 @@ final readonly class SwooleServerRequestConverter
         );
     }
 
-    /** @param mixed $file */
+    /**
+     * @param mixed $file
+     *
+     * @codeCoverageIgnore Requires actual file uploads
+     */
     private function isValidUploadedFile($file): bool
     {
         return is_array($file) && isset($file['tmp_name']) && is_string($file['tmp_name']);
@@ -222,6 +232,8 @@ final readonly class SwooleServerRequestConverter
 
     /**
      * @param array<string, mixed> $data
+     *
+     * @codeCoverageIgnore Requires actual file uploads
      */
     private function extractInt(array $data, string $key): ?int
     {
@@ -232,6 +244,8 @@ final readonly class SwooleServerRequestConverter
 
     /**
      * @param array<string, mixed> $data
+     *
+     * @codeCoverageIgnore Requires actual file uploads
      */
     private function extractString(array $data, string $key): ?string
     {

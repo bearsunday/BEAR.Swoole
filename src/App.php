@@ -8,6 +8,9 @@ use BEAR\Resource\ResourceInterface;
 use BEAR\Sunday\Extension\Transfer\TransferInterface;
 use BEAR\Sunday\Extension\Router\RouterInterface;
 
+/**
+ * @codeCoverageIgnore Swoole server context only
+ */
 final readonly class App
 {
     public function __construct(

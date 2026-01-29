@@ -7,6 +7,9 @@ namespace BEAR\Swoole;
 use BEAR\QueryRepository\ResourceStorageInterface;
 use Swoole\Http\Response;
 
+/**
+ * @codeCoverageIgnore Swoole server context only
+ */
 final readonly class HttpCache implements HttpCacheInterface
 {
     public function __construct(

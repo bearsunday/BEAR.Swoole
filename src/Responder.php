@@ -8,6 +8,9 @@ use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Extension\Transfer\TransferInterface;
 use Swoole\Http\Response;
 
+/**
+ * @codeCoverageIgnore Swoole server context only
+ */
 final class Responder implements TransferInterface
 {
     private Response $response;

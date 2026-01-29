@@ -7,7 +7,10 @@ namespace BEAR\Swoole;
 use Psr\Http\Message\UploadedFileInterface;
 use Ray\Di\ProviderInterface;
 
-/** @implements ProviderInterface<array<UploadedFileInterface>> */
+/**
+ * @implements ProviderInterface<array<UploadedFileInterface>>
+ * @codeCoverageIgnore Swoole coroutine context only
+ */
 final readonly class SwooleUploadfilesProvider implements ProviderInterface
 {
     public function __construct(

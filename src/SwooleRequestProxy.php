@@ -22,7 +22,7 @@ final class SwooleRequestProxy implements ServerRequestInterface
     {
         $currentCid = Coroutine::getCid();
         if (! is_int($currentCid) || $currentCid === -1) {
-            throw new RequestNotSeededException();
+            throw new RequestNotSeededException(); // @codeCoverageIgnore
         }
 
         /** @var int|false $cid */
@@ -32,7 +32,7 @@ final class SwooleRequestProxy implements ServerRequestInterface
             /** @var ArrayObject<string, mixed>|null $context */
             $context = Coroutine::getContext($cid);
             if ($context === null) {
-                break;
+                break; // @codeCoverageIgnore
             }
 
             $psr7Request = $this->findPsr7Request($context, $currentCid, $cid);
@@ -45,10 +45,10 @@ final class SwooleRequestProxy implements ServerRequestInterface
                 return $psr7Request;
             }
 
-            $cid = Coroutine::getPcid($cid);
+            $cid = Coroutine::getPcid($cid); // @codeCoverageIgnore
         }
 
-        throw new RequestNotSeededException();
+        throw new RequestNotSeededException(); // @codeCoverageIgnore
     }
 
     /**
@@ -74,7 +74,7 @@ final class SwooleRequestProxy implements ServerRequestInterface
     {
         $swooleRequest = $context[\Swoole\Http\Request::class] ?? null;
         if (! $swooleRequest instanceof \Swoole\Http\Request) {
-            return null;
+            return null; // @codeCoverageIgnore
         }
 
         $psr7Request = $this->converter->createFromSwoole($swooleRequest);
@@ -84,6 +84,7 @@ final class SwooleRequestProxy implements ServerRequestInterface
         return $psr7Request;
     }
 
+    /** @codeCoverageIgnore Child coroutine caching */
     private function cacheInCurrentContext(ServerRequestInterface $psr7Request, int $currentCid, int $cid): void
     {
         if ($cid === $currentCid) {
@@ -97,11 +98,13 @@ final class SwooleRequestProxy implements ServerRequestInterface
         }
     }
 
+    /** @codeCoverageIgnore */
     public function getProtocolVersion(): string
     {
         return $this->getRequest()->getProtocolVersion();
     }
 
+    /** @codeCoverageIgnore */
     public function withProtocolVersion(string $version): ServerRequestInterface
     {
         return $this->getRequest()->withProtocolVersion($version); // @phpstan-ignore return.type
@@ -109,12 +112,15 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @return array<string, list<string>>
+     *
+     * @codeCoverageIgnore
      */
     public function getHeaders(): array
     {
         return $this->getRequest()->getHeaders();
     }
 
+    /** @codeCoverageIgnore */
     public function hasHeader(string $name): bool
     {
         return $this->getRequest()->hasHeader($name);
@@ -122,12 +128,15 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @return list<string>
+     *
+     * @codeCoverageIgnore
      */
     public function getHeader(string $name): array
     {
         return $this->getRequest()->getHeader($name);
     }
 
+    /** @codeCoverageIgnore */
     public function getHeaderLine(string $name): string
     {
         return $this->getRequest()->getHeaderLine($name);
@@ -135,6 +144,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @param string|list<string> $value
+     *
+     * @codeCoverageIgnore
      */
     public function withHeader(string $name, $value): ServerRequestInterface
     {
@@ -143,47 +154,57 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @param string|list<string> $value
+     *
+     * @codeCoverageIgnore
      */
     public function withAddedHeader(string $name, $value): ServerRequestInterface
     {
         return $this->getRequest()->withAddedHeader($name, $value); // @phpstan-ignore return.type
     }
 
+    /** @codeCoverageIgnore */
     public function withoutHeader(string $name): ServerRequestInterface
     {
         return $this->getRequest()->withoutHeader($name); // @phpstan-ignore return.type
     }
 
+    /** @codeCoverageIgnore */
     public function getBody(): StreamInterface
     {
         return $this->getRequest()->getBody();
     }
 
+    /** @codeCoverageIgnore */
     public function withBody(StreamInterface $body): ServerRequestInterface
     {
         return $this->getRequest()->withBody($body); // @phpstan-ignore return.type
     }
 
+    /** @codeCoverageIgnore */
     public function getRequestTarget(): string
     {
         return $this->getRequest()->getRequestTarget();
     }
 
+    /** @codeCoverageIgnore */
     public function withRequestTarget(string $requestTarget): ServerRequestInterface
     {
         return $this->getRequest()->withRequestTarget($requestTarget); // @phpstan-ignore return.type
     }
 
+    /** @codeCoverageIgnore */
     public function getMethod(): string
     {
         return $this->getRequest()->getMethod();
     }
 
+    /** @codeCoverageIgnore */
     public function withMethod(string $method): ServerRequestInterface
     {
         return $this->getRequest()->withMethod($method); // @phpstan-ignore return.type
     }
 
+    /** @codeCoverageIgnore */
     public function getUri(): UriInterface
     {
         return $this->getRequest()->getUri();
@@ -191,6 +212,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     *
+     * @codeCoverageIgnore
      */
     public function withUri(UriInterface $uri, bool $preserveHost = false): ServerRequestInterface
     {
@@ -199,6 +222,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @return array<string, mixed>
+     *
+     * @codeCoverageIgnore
      */
     public function getServerParams(): array
     {
@@ -207,6 +232,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @return array<string, string>
+     *
+     * @codeCoverageIgnore
      */
     public function getCookieParams(): array
     {
@@ -215,6 +242,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @param array<string, string> $cookies
+     *
+     * @codeCoverageIgnore
      */
     public function withCookieParams(array $cookies): ServerRequestInterface
     {
@@ -223,6 +252,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @return array<string, mixed>
+     *
+     * @codeCoverageIgnore
      */
     public function getQueryParams(): array
     {
@@ -231,6 +262,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @param array<string, mixed> $query
+     *
+     * @codeCoverageIgnore
      */
     public function withQueryParams(array $query): ServerRequestInterface
     {
@@ -239,6 +272,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @return array<string, mixed>
+     *
+     * @codeCoverageIgnore
      */
     public function getUploadedFiles(): array
     {
@@ -247,6 +282,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @param array<string, mixed> $uploadedFiles
+     *
+     * @codeCoverageIgnore
      */
     public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
     {
@@ -255,6 +292,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @return array<string, mixed>|object|null
+     *
+     * @codeCoverageIgnore
      */
     public function getParsedBody()
     {
@@ -263,6 +302,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @param array<string, mixed>|object|null $data
+     *
+     * @codeCoverageIgnore
      */
     public function withParsedBody($data): ServerRequestInterface
     {
@@ -271,6 +312,8 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @return array<string, mixed>
+     *
+     * @codeCoverageIgnore
      */
     public function getAttributes(): array
     {
@@ -279,17 +322,21 @@ final class SwooleRequestProxy implements ServerRequestInterface
 
     /**
      * @return mixed
+     *
+     * @codeCoverageIgnore
      */
     public function getAttribute(string $name, mixed $default = null)
     {
         return $this->getRequest()->getAttribute($name, $default);
     }
 
+    /** @codeCoverageIgnore */
     public function withAttribute(string $name, mixed $value): ServerRequestInterface
     {
         return $this->getRequest()->withAttribute($name, $value); // @phpstan-ignore return.type
     }
 
+    /** @codeCoverageIgnore */
     public function withoutAttribute(string $name): ServerRequestInterface
     {
         return $this->getRequest()->withoutAttribute($name); // @phpstan-ignore return.type

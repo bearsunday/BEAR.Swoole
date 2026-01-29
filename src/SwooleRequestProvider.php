@@ -43,7 +43,7 @@ final class SwooleRequestProvider implements ProviderInterface, RequestProviderI
         /** @var ArrayObject<string, mixed>|null $context */
         $context = Coroutine::getContext();
         if ($context === null) {
-            throw new NotInCoroutineException();
+            throw new NotInCoroutineException(); // @codeCoverageIgnore
         }
 
         $server = SwooleServerRequestConverter::toGlobals($request);

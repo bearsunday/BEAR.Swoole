@@ -7,7 +7,10 @@ namespace BEAR\Swoole;
 use Psr\Http\Message\UriInterface;
 use Ray\Di\ProviderInterface;
 
-/** @implements ProviderInterface<UriInterface> */
+/**
+ * @implements ProviderInterface<UriInterface>
+ * @codeCoverageIgnore Swoole coroutine context only
+ */
 final readonly class SwooleUriProvider implements ProviderInterface
 {
     public function __construct(

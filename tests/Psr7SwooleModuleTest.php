@@ -14,6 +14,118 @@ use Swoole\Http\Request;
 
 class Psr7SwooleModuleTest extends TestCase
 {
+    public function testToGlobalsWithContentTypeAndContentLength(): void
+    {
+        $request = new Request();
+        $request->server = ['request_method' => 'POST'];
+        $request->header = [
+            'content-type' => 'application/json',
+            'content-length' => '123',
+            'x-custom' => 'value',
+        ];
+
+        $server = SwooleServerRequestConverter::toGlobals($request);
+
+        $this->assertSame('application/json', $server['CONTENT_TYPE']);
+        $this->assertSame('123', $server['CONTENT_LENGTH']);
+        $this->assertSame('value', $server['HTTP_X_CUSTOM']);
+    }
+
+    public function testCreateFromSwooleWithHttps(): void
+    {
+        /** @phpstan-ignore-next-line function.notFound */
+        \Co\run(function (): void {
+            $injector = new Injector(new SwooleModule());
+            $request = new Request();
+            $request->get = [];
+            $request->post = [];
+            $request->server = [
+                'request_method' => 'GET',
+                'request_uri' => '/secure',
+                'https' => 'on',
+                'server_port' => 443,
+            ];
+            $request->header = ['host' => 'example.com'];
+            $request->cookie = [];
+
+            SwooleRequestProvider::seed($request);
+            $serverRequest = $injector->getInstance(ServerRequestInterface::class);
+
+            $this->assertSame('https', $serverRequest->getUri()->getScheme());
+        });
+    }
+
+    public function testCreateFromSwooleWithXForwardedProto(): void
+    {
+        /** @phpstan-ignore-next-line function.notFound */
+        \Co\run(function (): void {
+            $injector = new Injector(new SwooleModule());
+            $request = new Request();
+            $request->get = [];
+            $request->post = [];
+            $request->server = [
+                'request_method' => 'GET',
+                'request_uri' => '/proxy',
+            ];
+            $request->header = [
+                'host' => 'example.com',
+                'x-forwarded-proto' => 'https',
+            ];
+            $request->cookie = [];
+
+            SwooleRequestProvider::seed($request);
+            $serverRequest = $injector->getInstance(ServerRequestInterface::class);
+
+            $this->assertSame('https', $serverRequest->getUri()->getScheme());
+        });
+    }
+
+    public function testCreateFromSwooleWithServerName(): void
+    {
+        /** @phpstan-ignore-next-line function.notFound */
+        \Co\run(function (): void {
+            $injector = new Injector(new SwooleModule());
+            $request = new Request();
+            $request->get = [];
+            $request->post = [];
+            $request->server = [
+                'request_method' => 'GET',
+                'request_uri' => '/',
+                'server_name' => 'fallback.example.com',
+                'server_port' => 8080,
+            ];
+            $request->header = [];
+            $request->cookie = [];
+
+            SwooleRequestProvider::seed($request);
+            $serverRequest = $injector->getInstance(ServerRequestInterface::class);
+
+            $this->assertSame('fallback.example.com', $serverRequest->getUri()->getHost());
+            $this->assertSame(8080, $serverRequest->getUri()->getPort());
+        });
+    }
+
+    public function testCreateFromSwooleWithoutRequestMethod(): void
+    {
+        /** @phpstan-ignore-next-line function.notFound */
+        \Co\run(function (): void {
+            $injector = new Injector(new SwooleModule());
+            $request = new Request();
+            $request->get = [];
+            $request->post = [];
+            $request->server = [
+                'request_uri' => '/',
+            ];
+            $request->header = [];
+            $request->cookie = [];
+
+            SwooleRequestProvider::seed($request);
+            $serverRequest = $injector->getInstance(ServerRequestInterface::class);
+
+            $this->assertSame('GET', $serverRequest->getMethod());
+        });
+    }
+
     public function testPsr7SwooleModule(): void
     {
         /** @phpstan-ignore-next-line function.notFound */
