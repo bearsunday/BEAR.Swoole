@@ -6,6 +6,7 @@ use BEAR\AppMeta\Meta;
 use BEAR\Package\Module;
 use BEAR\Swoole\App;
 use BEAR\Swoole\SwooleModule;
+use BEAR\Swoole\SwooleRequestProvider;
 use Ray\Di\Injector;
 use Swoole\Http\Request;
 use Swoole\Http\Response;

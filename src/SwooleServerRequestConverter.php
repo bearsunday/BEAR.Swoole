@@ -23,10 +23,10 @@ use const CASE_UPPER;
 final readonly class SwooleServerRequestConverter
 {
     public function __construct(
-        private readonly ServerRequestFactoryInterface $serverRequestFactory,
-        private readonly UriFactoryInterface $uriFactory,
-        private readonly UploadedFileFactoryInterface $uploadedFileFactory,
-        private readonly StreamFactoryInterface $streamFactory
+        private ServerRequestFactoryInterface $serverRequestFactory,
+        private UriFactoryInterface $uriFactory,
+        private UploadedFileFactoryInterface $uploadedFileFactory,
+        private StreamFactoryInterface $streamFactory
     ) {
     }
 
@@ -115,41 +115,68 @@ final readonly class SwooleServerRequestConverter
     private function parseUri(array $server): UriInterface
     {
         $uri = $this->uriFactory->createUri();
+        $uri = $uri->withScheme($this->detectScheme($server));
+        $uri = $this->applyHost($uri, $server);
+        $uri = $this->applyPort($uri, $server);
+        $uri = $this->applyPath($uri, $server);
 
+        return $this->applyQuery($uri, $server);
+    }
+
+    /** @param array<string, mixed> $server */
+    private function detectScheme(array $server): string
+    {
         $xForwardedProto = $server['HTTP_X_FORWARDED_PROTO'] ?? null;
-        $https = $server['HTTPS'] ?? null;
         if (is_scalar($xForwardedProto)) {
-            $uri = $uri->withScheme((string) $xForwardedProto);
-        } elseif (is_scalar($https) && $https !== 'off') {
-            $uri = $uri->withScheme('https');
-        } else {
-            $uri = $uri->withScheme('http');
+            return (string) $xForwardedProto;
         }
 
+        $https = $server['HTTPS'] ?? null;
+        if (is_scalar($https) && $https !== 'off') {
+            return 'https';
+        }
+
+        return 'http';
+    }
+
+    /** @param array<string, mixed> $server */
+    private function applyHost(UriInterface $uri, array $server): UriInterface
+    {
         $httpHost = $server['HTTP_HOST'] ?? null;
-        $serverName = $server['SERVER_NAME'] ?? null;
         if (is_scalar($httpHost)) {
-            $uri = $uri->withHost((string) $httpHost);
-        } elseif (is_scalar($serverName)) {
-            $uri = $uri->withHost((string) $serverName);
+            return $uri->withHost((string) $httpHost);
         }
 
-        $serverPort = $server['SERVER_PORT'] ?? null;
-        if (is_scalar($serverPort)) {
-            $uri = $uri->withPort((int) $serverPort);
-        }
-
-        $requestUri = $server['REQUEST_URI'] ?? null;
-        if (is_scalar($requestUri)) {
-            $uri = $uri->withPath((string) $requestUri);
-        }
-
-        $queryString = $server['QUERY_STRING'] ?? null;
-        if (is_scalar($queryString)) {
-            $uri = $uri->withQuery((string) $queryString);
+        $serverName = $server['SERVER_NAME'] ?? null;
+        if (is_scalar($serverName)) {
+            return $uri->withHost((string) $serverName);
         }
 
         return $uri;
+    }
+
+    /** @param array<string, mixed> $server */
+    private function applyPort(UriInterface $uri, array $server): UriInterface
+    {
+        $serverPort = $server['SERVER_PORT'] ?? null;
+
+        return is_scalar($serverPort) ? $uri->withPort((int) $serverPort) : $uri;
+    }
+
+    /** @param array<string, mixed> $server */
+    private function applyPath(UriInterface $uri, array $server): UriInterface
+    {
+        $requestUri = $server['REQUEST_URI'] ?? null;
+
+        return is_scalar($requestUri) ? $uri->withPath((string) $requestUri) : $uri;
+    }
+
+    /** @param array<string, mixed> $server */
+    private function applyQuery(UriInterface $uri, array $server): UriInterface
+    {
+        $queryString = $server['QUERY_STRING'] ?? null;
+
+        return is_scalar($queryString) ? $uri->withQuery((string) $queryString) : $uri;
     }
 
     /**
@@ -161,19 +188,28 @@ final readonly class SwooleServerRequestConverter
     {
         $parsed = [];
         foreach ($uploadedFiles as $key => $file) {
-            if (! is_array($file) || ! isset($file['tmp_name']) || ! is_string($file['tmp_name'])) {
-                continue;
+            $uploadedFile = $this->createUploadedFile($file);
+            if ($uploadedFile !== null) {
+                $parsed[$key] = $uploadedFile;
             }
-
-            $parsed[$key] = $this->uploadedFileFactory->createUploadedFile(
-                $this->streamFactory->createStreamFromFile($file['tmp_name']),
-                isset($file['size']) ? (int) $file['size'] : null,
-                isset($file['error']) ? (int) $file['error'] : 0,
-                isset($file['name']) && is_string($file['name']) ? $file['name'] : null,
-                isset($file['type']) && is_string($file['type']) ? $file['type'] : null
-            );
         }
 
         return $parsed;
+    }
+
+    /** @param mixed $file */
+    private function createUploadedFile($file): ?\Psr\Http\Message\UploadedFileInterface
+    {
+        if (! is_array($file) || ! isset($file['tmp_name']) || ! is_string($file['tmp_name'])) {
+            return null;
+        }
+
+        return $this->uploadedFileFactory->createUploadedFile(
+            $this->streamFactory->createStreamFromFile($file['tmp_name']),
+            isset($file['size']) ? (int) $file['size'] : null,
+            isset($file['error']) ? (int) $file['error'] : 0,
+            isset($file['name']) && is_string($file['name']) ? $file['name'] : null,
+            isset($file['type']) && is_string($file['type']) ? $file['type'] : null
+        );
     }
 }

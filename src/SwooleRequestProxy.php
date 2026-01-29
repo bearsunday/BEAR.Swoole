@@ -21,43 +21,27 @@ final class SwooleRequestProxy implements ServerRequestInterface
     private function getRequest(): ServerRequestInterface
     {
         $currentCid = Coroutine::getCid();
+        if (! is_int($currentCid) || $currentCid === -1) {
+            throw new RequestNotSeededException();
+        }
+
+        /** @var int|false $cid */
         $cid = $currentCid;
 
-        while ($cid !== -1 && $cid !== false) {
+        while (is_int($cid) && $cid !== -1) {
             /** @var ArrayObject<string, mixed>|null $context */
             $context = Coroutine::getContext($cid);
             if ($context === null) {
                 break;
             }
 
-            // 1. Try cached PSR-7 request
-            if (isset($context[ServerRequestInterface::class])) {
-                /** @var ServerRequestInterface $psr7Request */
-                $psr7Request = $context[ServerRequestInterface::class];
-                if ($cid !== $currentCid) {
-                    /** @var ArrayObject<string, mixed>|null $currentContext */
-                    $currentContext = Coroutine::getContext($currentCid);
-                    if ($currentContext !== null) {
-                        $currentContext[ServerRequestInterface::class] = $psr7Request; // Cache in current context
-                    }
-                }
-
+            $psr7Request = $this->findPsr7Request($context, $currentCid, $cid);
+            if ($psr7Request !== null) {
                 return $psr7Request;
             }
 
-            // 2. Try raw Swoole request seeded by bootstrap
-            $swooleRequest = $context[\Swoole\Http\Request::class] ?? null;
-            if ($swooleRequest instanceof \Swoole\Http\Request) {
-                $psr7Request = $this->converter->createFromSwoole($swooleRequest);
-                $context[ServerRequestInterface::class] = $psr7Request; // Cache in the context where raw request was found
-                if ($cid !== $currentCid) {
-                    /** @var ArrayObject<string, mixed>|null $currentContext */
-                    $currentContext = Coroutine::getContext($currentCid);
-                    if ($currentContext !== null) {
-                        $currentContext[ServerRequestInterface::class] = $psr7Request; // Also cache in current context
-                    }
-                }
-
+            $psr7Request = $this->convertSwooleRequest($context, $currentCid, $cid);
+            if ($psr7Request !== null) {
                 return $psr7Request;
             }
 
@@ -65,6 +49,52 @@ final class SwooleRequestProxy implements ServerRequestInterface
         }
 
         throw new RequestNotSeededException();
+    }
+
+    /**
+     * @param ArrayObject<string, mixed> $context
+     */
+    private function findPsr7Request(ArrayObject $context, int $currentCid, int $cid): ?ServerRequestInterface
+    {
+        if (! isset($context[ServerRequestInterface::class])) {
+            return null;
+        }
+
+        /** @var ServerRequestInterface $psr7Request */
+        $psr7Request = $context[ServerRequestInterface::class];
+        $this->cacheInCurrentContext($psr7Request, $currentCid, $cid);
+
+        return $psr7Request;
+    }
+
+    /**
+     * @param ArrayObject<string, mixed> $context
+     */
+    private function convertSwooleRequest(ArrayObject $context, int $currentCid, int $cid): ?ServerRequestInterface
+    {
+        $swooleRequest = $context[\Swoole\Http\Request::class] ?? null;
+        if (! $swooleRequest instanceof \Swoole\Http\Request) {
+            return null;
+        }
+
+        $psr7Request = $this->converter->createFromSwoole($swooleRequest);
+        $context[ServerRequestInterface::class] = $psr7Request;
+        $this->cacheInCurrentContext($psr7Request, $currentCid, $cid);
+
+        return $psr7Request;
+    }
+
+    private function cacheInCurrentContext(ServerRequestInterface $psr7Request, int $currentCid, int $cid): void
+    {
+        if ($cid === $currentCid) {
+            return;
+        }
+
+        /** @var ArrayObject<string, mixed>|null $currentContext */
+        $currentContext = Coroutine::getContext($currentCid);
+        if ($currentContext !== null) {
+            $currentContext[ServerRequestInterface::class] = $psr7Request;
+        }
     }
 
     public function getProtocolVersion(): string
@@ -159,6 +189,9 @@ final class SwooleRequestProxy implements ServerRequestInterface
         return $this->getRequest()->getUri();
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function withUri(UriInterface $uri, bool $preserveHost = false): ServerRequestInterface
     {
         return $this->getRequest()->withUri($uri, $preserveHost); // @phpstan-ignore return.type
