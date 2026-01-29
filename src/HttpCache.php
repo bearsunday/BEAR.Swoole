@@ -20,8 +20,7 @@ final readonly class HttpCache implements HttpCacheInterface
     ) {
     }
 
-    /** @SuppressWarnings(PHPMD.UnusedFormalParameter) */
-    public function isNotModified(array $server): bool // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function isNotModified(): bool
     {
         $etag = $this->getIfNoneMatch();
 

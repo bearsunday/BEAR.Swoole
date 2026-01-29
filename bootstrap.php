@@ -33,7 +33,7 @@ return static function (string $context, string $name, string $ip, int $port, ar
         $server = SwooleRequestProvider::seed($request);
 
         // Check ETag from coroutine context directly.
-        if ($app->httpCache->isNotModified([])) {
+        if ($app->httpCache->isNotModified()) {
             $app->httpCache->transfer($response);
             return;
         }
