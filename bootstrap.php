@@ -32,8 +32,8 @@ return static function (string $context, string $name, string $ip, int $port, ar
         // Seed the context for potential PSR-7 use. Conversion is lazy.
         $server = SwooleRequestProvider::seed($request);
 
-        // Use Swoole native headers (lowercase keys) directly for performance.
-        if ($app->httpCache->isNotModified($server)) {
+        // Check ETag from coroutine context directly.
+        if ($app->httpCache->isNotModified([])) {
             $app->httpCache->transfer($response);
             return;
         }
