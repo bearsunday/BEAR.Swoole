@@ -8,9 +8,13 @@ use BEAR\Swoole\App;
 use BEAR\Swoole\SwooleModule;
 use BEAR\Swoole\SwooleRequestProvider;
 use Ray\Di\Injector;
+use Swoole\Coroutine;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
+
+// Enable coroutine hooks for all I/O operations (PDO, MySQL, Redis, curl, file, etc.)
+Coroutine::set(['hook_flags' => SWOOLE_HOOK_ALL]);
 
 /**
  * @return int Exit code

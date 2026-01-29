@@ -13,12 +13,16 @@ use Psr\Http\Message\UriInterface;
 use Swoole\Http\Request;
 
 use function array_change_key_case;
+use function explode;
 use function is_array;
 use function is_scalar;
 use function is_string;
+use function parse_url;
+use function str_contains;
 use function str_replace;
 
 use const CASE_UPPER;
+use const PHP_URL_PATH;
 
 final readonly class SwooleServerRequestConverter
 {
@@ -144,7 +148,13 @@ final readonly class SwooleServerRequestConverter
     {
         $httpHost = $server['HTTP_HOST'] ?? null;
         if (is_scalar($httpHost)) {
-            return $uri->withHost((string) $httpHost);
+            $host = (string) $httpHost;
+            if (str_contains($host, ':')) {
+                [$host, $port] = explode(':', $host, 2);
+                $uri = $uri->withPort((int) $port);
+            }
+
+            return $uri->withHost($host);
         }
 
         $serverName = $server['SERVER_NAME'] ?? null;
@@ -167,8 +177,13 @@ final readonly class SwooleServerRequestConverter
     private function applyPath(UriInterface $uri, array $server): UriInterface
     {
         $requestUri = $server['REQUEST_URI'] ?? null;
+        if (! is_scalar($requestUri)) {
+            return $uri;
+        }
 
-        return is_scalar($requestUri) ? $uri->withPath((string) $requestUri) : $uri;
+        $path = parse_url((string) $requestUri, PHP_URL_PATH);
+
+        return is_string($path) ? $uri->withPath($path) : $uri;
     }
 
     /** @param array<string, mixed> $server */

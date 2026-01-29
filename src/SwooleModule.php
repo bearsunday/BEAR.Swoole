@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace BEAR\Swoole;
 
+use BEAR\QueryRepository\ServerContextInterface;
 use BEAR\RepositoryModule\Annotation\EtagPool;
+use BEAR\Resource\NamedParamMetasInterface;
 use BEAR\Sunday\Extension\Transfer\TransferInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Cache\CacheItemPoolInterface;
@@ -43,5 +45,11 @@ final class SwooleModule extends AbstractModule
         $this->bind()->annotatedWith(UploadFiles::class)->toProvider(SwooleUploadfilesProvider::class);
         $this->bind(TransferInterface::class)->to(Responder::class);
         $this->bind(Error::class);
+        // Use Swoole-aware NamedParamMetas for web context parameters (must be installed before ResourceModule)
+        $this->bind(NamedParamMetasInterface::class)->to(SwooleNamedParamMetas::class);
+        // Server context for BEAR.QueryRepository coroutine-safe operation (requires BEAR.QueryRepository 1.14+)
+        if (interface_exists(ServerContextInterface::class)) {
+            $this->bind(ServerContextInterface::class)->to(SwooleServerContext::class);
+        }
     }
 }

@@ -3,3 +3,7 @@ parameters:
   paths:
     - src
     - tests
+  excludePaths:
+    # SwooleServerContext requires BEAR.QueryRepository 1.14+ (ServerContextInterface)
+    # Remove this exclusion after bear/query-repository ^1.14 is released
+    - src/SwooleServerContext.php
