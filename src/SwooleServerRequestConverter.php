@@ -200,16 +200,41 @@ final readonly class SwooleServerRequestConverter
     /** @param mixed $file */
     private function createUploadedFile($file): ?\Psr\Http\Message\UploadedFileInterface
     {
-        if (! is_array($file) || ! isset($file['tmp_name']) || ! is_string($file['tmp_name'])) {
+        if (! $this->isValidUploadedFile($file)) {
             return null;
         }
 
+        /** @var array{tmp_name: string, size?: mixed, error?: mixed, name?: mixed, type?: mixed} $file */
         return $this->uploadedFileFactory->createUploadedFile(
             $this->streamFactory->createStreamFromFile($file['tmp_name']),
-            isset($file['size']) ? (int) $file['size'] : null,
-            isset($file['error']) ? (int) $file['error'] : 0,
-            isset($file['name']) && is_string($file['name']) ? $file['name'] : null,
-            isset($file['type']) && is_string($file['type']) ? $file['type'] : null
+            $this->extractInt($file, 'size'),
+            $this->extractInt($file, 'error') ?? 0,
+            $this->extractString($file, 'name'),
+            $this->extractString($file, 'type')
         );
+    }
+
+    /** @param mixed $file */
+    private function isValidUploadedFile($file): bool
+    {
+        return is_array($file) && isset($file['tmp_name']) && is_string($file['tmp_name']);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function extractInt(array $data, string $key): ?int
+    {
+        $value = $data[$key] ?? null;
+
+        return is_scalar($value) ? (int) $value : null;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function extractString(array $data, string $key): ?string
+    {
+        return isset($data[$key]) && is_string($data[$key]) ? $data[$key] : null;
     }
 }
