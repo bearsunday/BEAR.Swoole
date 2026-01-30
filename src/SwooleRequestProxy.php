@@ -15,7 +15,7 @@ use Swoole\Http\Request;
 final readonly class SwooleRequestProxy implements ServerRequestInterface
 {
     public function __construct(
-        private readonly SwooleServerRequestConverter $converter,
+        private SwooleServerRequestConverter $converter,
     ) {
     }
 
