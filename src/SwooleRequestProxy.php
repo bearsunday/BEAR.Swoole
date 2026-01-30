@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use Swoole\Coroutine;
+use Swoole\Http\Request;
 
 final readonly class SwooleRequestProxy implements ServerRequestInterface
 {
@@ -20,82 +21,34 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
 
     private function getRequest(): ServerRequestInterface
     {
-        $currentCid = Coroutine::getCid();
-        if (! is_int($currentCid) || $currentCid === -1) {
-            throw new RequestNotSeededException(); // @codeCoverageIgnore
+        $psr7Request = CoroutineContextFinder::find(ServerRequestInterface::class, ServerRequestInterface::class);
+        if ($psr7Request !== null) {
+            return $psr7Request;
         }
 
-        /** @var int|false $cid */
-        $cid = $currentCid;
-
-        while (is_int($cid) && $cid !== -1) {
-            /** @var ArrayObject<string, mixed>|null $context */
-            $context = Coroutine::getContext($cid);
-            if ($context === null) {
-                break; // @codeCoverageIgnore
-            }
-
-            $psr7Request = $this->findPsr7Request($context, $currentCid, $cid);
-            if ($psr7Request !== null) {
-                return $psr7Request;
-            }
-
-            $psr7Request = $this->convertSwooleRequest($context, $currentCid, $cid);
-            if ($psr7Request !== null) {
-                return $psr7Request;
-            }
-
-            $cid = Coroutine::getPcid($cid); // @codeCoverageIgnore
+        $swooleRequest = CoroutineContextFinder::find(Request::class, Request::class);
+        if ($swooleRequest !== null) {
+            return $this->convertAndCache($swooleRequest);
         }
 
         throw new RequestNotSeededException(); // @codeCoverageIgnore
     }
 
-    /**
-     * @param ArrayObject<string, mixed> $context
-     */
-    private function findPsr7Request(ArrayObject $context, int $currentCid, int $cid): ?ServerRequestInterface
+    /** @codeCoverageIgnore */
+    private function convertAndCache(Request $swooleRequest): ServerRequestInterface
     {
-        if (! isset($context[ServerRequestInterface::class])) {
-            return null;
-        }
-
-        /** @var ServerRequestInterface $psr7Request */
-        $psr7Request = $context[ServerRequestInterface::class];
-        $this->cacheInCurrentContext($psr7Request, $currentCid, $cid);
-
-        return $psr7Request;
-    }
-
-    /**
-     * @param ArrayObject<string, mixed> $context
-     */
-    private function convertSwooleRequest(ArrayObject $context, int $currentCid, int $cid): ?ServerRequestInterface
-    {
-        $swooleRequest = $context[\Swoole\Http\Request::class] ?? null;
-        if (! $swooleRequest instanceof \Swoole\Http\Request) {
-            return null; // @codeCoverageIgnore
-        }
-
         $psr7Request = $this->converter->createFromSwoole($swooleRequest);
-        $context[ServerRequestInterface::class] = $psr7Request;
-        $this->cacheInCurrentContext($psr7Request, $currentCid, $cid);
+
+        $cid = Coroutine::getCid();
+        if (is_int($cid) && $cid !== -1) {
+            /** @var ArrayObject<string, mixed>|null $context */
+            $context = Coroutine::getContext($cid);
+            if ($context !== null) {
+                $context[ServerRequestInterface::class] = $psr7Request;
+            }
+        }
 
         return $psr7Request;
-    }
-
-    /** @codeCoverageIgnore Child coroutine caching */
-    private function cacheInCurrentContext(ServerRequestInterface $psr7Request, int $currentCid, int $cid): void
-    {
-        if ($cid === $currentCid) {
-            return;
-        }
-
-        /** @var ArrayObject<string, mixed>|null $currentContext */
-        $currentContext = Coroutine::getContext($currentCid);
-        if ($currentContext !== null) {
-            $currentContext[ServerRequestInterface::class] = $psr7Request;
-        }
     }
 
     /** @codeCoverageIgnore */
