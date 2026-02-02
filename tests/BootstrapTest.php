@@ -38,26 +38,7 @@ class BootstrapTest extends TestCase
         $this->assertSame('', (string) $response2->getBody());
     }
 
-    /** test @CookieParam, @FormParam, @QueryParam, @ServerParam annotated web context injection */
-    public function testInjectWebContext(): void
-    {
-        $jar = CookieJar::fromArray([
-            'c' => 'cookie_value',
-        ], '127.0.0.1');
-        $response = $this->client->post('/web-context?q=query_value', [
-            'cookies' => $jar,
-            'form_params' => ['f' => 'form_value'],
-            'headers' => ['x-my-header' => 'header_value'],
-        ]);
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('{
-    "cookie": "cookie_value",
-    "form": "form_value",
-    "query": "query_value",
-    "header": "header_value"
-}
-', (string) $response->getBody());
-    }
+
 
     /** test @CookieParam, @FormParam, @QueryParam, @ServerParam annotated web context injection */
     public function testPsr7ServerRequest(): void

@@ -7,7 +7,6 @@ This library provides the support of Swoole into an BEAR.Sunday application.
 Run the following to install this library:
 
     composer require bear/swoole
-    composer require fastd/http 5.0.x-dev
 
 ## Entry Script
 
@@ -29,3 +28,25 @@ exit((require dirname(__DIR__) . '/vendor/bear/swoole/bootstrap.php')(
 You can run a BEAR.Sunday application with Swoole using the following command:
 
     php bin/swoole.php
+
+## Request Access
+
+In Swoole's long-running process, PHP superglobals (`$_SERVER`, `$_GET`, `$_POST`, etc.) are not available per-request. Use PSR-7 ServerRequest injection instead:
+
+```php
+use Psr\Http\Message\ServerRequestInterface;
+
+class MyResource extends ResourceObject
+{
+    public function __construct(
+        private ServerRequestInterface $request
+    ) {}
+
+    public function onGet(): static
+    {
+        $server = $this->request->getServerParams();
+        $query = $this->request->getQueryParams();
+        // ...
+    }
+}
+```

@@ -8,8 +8,7 @@ use Swoole\Http\Response;
 
 interface HttpCacheInterface
 {
-    /** @param array<string, string> $server */
-    public function isNotModified(array $server): bool;
+    public function isNotModified(): bool;
 
     public function transfer(Response $response): void;
 }

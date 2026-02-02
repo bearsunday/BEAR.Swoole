@@ -13,16 +13,20 @@ use Ray\WebContextParam\Annotation\ServerParam;
 class WebContext extends ResourceObject
 {
     public function onPost(
-        #[CookieParam('c')] string $cookie,
-        #[FormParam('f')] string $form,
-        #[QueryParam('q')] string $query,
-        #[ServerParam('HTTP_X_MY_HEADER')] string $header,
+        #[QueryParam('q')]
+        string $query,
+        #[FormParam('f')]
+        string $form,
+        #[CookieParam('c')]
+        string $cookie,
+        #[ServerParam('REQUEST_METHOD')]
+        string $method,
     ): static {
         $this->body = [
-            'cookie' => $cookie,
-            'form' => $form,
             'query' => $query,
-            'header' => $header,
+            'form' => $form,
+            'cookie' => $cookie,
+            'method' => $method,
         ];
 
         return $this;

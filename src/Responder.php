@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace BEAR\Swoole;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Resource\TransferInterface;
+use BEAR\Sunday\Extension\Transfer\TransferInterface;
 use Swoole\Http\Response;
 
+/**
+ * @codeCoverageIgnore Swoole server context only
+ */
 final class Responder implements TransferInterface
 {
     private Response $response;

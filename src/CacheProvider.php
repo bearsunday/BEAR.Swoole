@@ -7,7 +7,10 @@ namespace BEAR\Swoole;
 use Ray\Di\ProviderInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-/** @implements ProviderInterface<ArrayAdapter> */
+/**
+ * @implements ProviderInterface<ArrayAdapter>
+ * @codeCoverageIgnore Swoole server context only
+ */
 final readonly class CacheProvider implements ProviderInterface
 {
     public function get(): ArrayAdapter
