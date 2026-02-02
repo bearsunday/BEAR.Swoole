@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BEAR.Swoole provides Swoole HTTP server integration for BEAR.Sunday applications. It enables high-performance async HTTP serving by replacing Apache/nginx with Swoole's event-driven server.
 
-**Requirements:** PHP 8.2+, Swoole extension
+**Requirements:** PHP 8.2+, ext-swoole ^6.1
 
 ## Development Commands
 
@@ -38,30 +38,29 @@ Tests require a running Swoole server. The test bootstrap (`tests/bootstrap.php`
 
 ### Request Flow
 
-1. `bootstrap.php` - Entry point that creates and configures the Swoole HTTP server
-2. `App` - Main application container holding router, responder, resource, and error handler
-3. `SwooleModule` - Ray.Di module that binds Swoole-specific implementations
-4. `SuperGlobals` - Populates `$_GET`, `$_POST`, `$_COOKIE`, `$_SERVER` from Swoole request
-5. `Responder` - Transfers ResourceObject responses to Swoole Response
+1. `bootstrap.php` - Entry point that creates Swoole HTTP server and handles request events
+2. `SwooleRequestProvider::seed()` - Seeds coroutine context with raw Swoole request and `$_SERVER`-compatible array
+3. `App` - Main application container holding router, responder, resource, and error handler
+4. `Responder` - Transfers ResourceObject responses to Swoole Response
 
-### Key Components
+### Coroutine-Based Request Isolation
 
-- `HttpCache` / `HttpCacheInterface` - ETag-based HTTP caching using BEAR.QueryRepository storage
-- `SwooleRequestProvider` - Provides PSR-7 ServerRequest from Swoole request globals
-- `SwooleServerRequest` - Builds PSR-7 ServerRequest from Swoole's `$_SERVER` equivalent
+This library uses Swoole coroutine context instead of PHP superglobals for request isolation:
+
+- `SwooleRequestProvider::seed()` stores raw Swoole request in coroutine context
+- `SwooleRequestProxy` implements `ServerRequestInterface` as a lazy proxy that retrieves the actual PSR-7 request from coroutine context on demand
+- `SwooleServerRequestConverter` converts Swoole request to PSR-7 `ServerRequestInterface` (conversion happens lazily only when PSR-7 is actually needed)
+- Parent coroutine context is searched if current context lacks request data
 
 ### Module Bindings
 
 `SwooleModule` replaces standard BEAR.Sunday bindings:
 - `TransferInterface` → `Responder` (Swoole response adapter)
-- `RequestProviderInterface` → `SwooleRequestProvider` (PSR-7 from Swoole)
+- `RequestProviderInterface` → `SwooleRequestProvider` (provides PSR-7 via coroutine context)
+- `ServerRequestInterface` → `SwooleRequestProxy` (lazy proxy to actual PSR-7 request)
 - `HttpCacheInterface` → `HttpCache` (304 Not Modified support)
 - Cache pools use `CacheProvider` for in-memory caching suitable for long-running processes
 
 ## Test Application
 
-`tests/Fake/` contains a minimal BEAR.Skeleton application used for integration tests. Resources include:
-- `Page/Index` - Basic greeting response
-- `Page/Cache` - Tests ETag/304 caching
-- `Page/WebContext` - Tests web context parameter injection
-- `Page/Psr7` - Tests PSR-7 ServerRequest injection
+`tests/Fake/` contains a minimal BEAR.Skeleton application used for integration tests.
