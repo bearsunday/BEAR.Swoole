@@ -7,6 +7,8 @@ namespace BEAR\Swoole;
 use BEAR\QueryRepository\ServerContextInterface;
 use BEAR\RepositoryModule\Annotation\EtagPool;
 use BEAR\Resource\NamedParamMetasInterface;
+use BEAR\Resource\ResourceClient;
+use BEAR\Resource\ResourceInterface;
 use BEAR\Sunday\Extension\Transfer\TransferInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Cache\CacheItemPoolInterface;
@@ -26,6 +28,7 @@ final class SwooleModule extends AbstractModule
 {
     protected function configure(): void
     {
+        $this->bind(ResourceInterface::class)->to(ResourceClient::class)->in(Scope::SINGLETON);
         $this->install(new \Ray\HttpMessage\Psr7Module());
         $this->bind()->annotatedWith('cache_namespace')->toInstance('');
         $this->bind(CacheItemPoolInterface::class)->annotatedWith(Shared::class)->toProvider(CacheProvider::class)->in(Scope::SINGLETON);
