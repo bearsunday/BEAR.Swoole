@@ -7,7 +7,7 @@
         "ext-swoole": "^6.1",
         "bear/app-meta": "^1.6",
         "bear/query-repository": "^1.8.4",
-        "bear/resource": "1.x-dev as 1.31.0",
+        "bear/resource": "^1.31",
         "bear/sunday": "^1.6",
         "nyholm/psr7": "^1.8",
         "psr/cache": "^1.0 || ^2.0 || ^3.0",
