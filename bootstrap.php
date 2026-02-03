@@ -6,6 +6,7 @@ use BEAR\AppMeta\Meta;
 use BEAR\Package\Module;
 use BEAR\Swoole\App;
 use BEAR\Swoole\SwooleModule;
+use BEAR\Resource\Method;
 use BEAR\Swoole\SwooleRequestProvider;
 use Ray\Di\Injector;
 use Swoole\Coroutine;
@@ -51,7 +52,7 @@ return static function (string $context, string $name, string $ip, int $port, ar
         );
 
         try {
-            $ro = $app->resource->{$match->method}->uri($match->path)($match->query);
+            $ro = $app->resource->newRequest(Method::from($match->method), $match->path, $match->query)();
 
             $app->responder->setResponse($response);
             $ro->transfer($app->responder, []);
