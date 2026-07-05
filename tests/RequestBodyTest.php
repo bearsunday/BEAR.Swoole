@@ -65,4 +65,41 @@ class RequestBodyTest extends TestCase
         $alive = $this->client->get('/');
         $this->assertSame(200, $alive->getStatusCode(), 'Server must survive an empty JSON request');
     }
+
+    /** A syntactically valid but non-object JSON body (e.g. 123) makes the router throw a TypeError, an Error not an Exception */
+    public function testScalarJsonBodyDoesNotCrashServer(): void
+    {
+        $response = $this->client->put('/ticket', [
+            'headers' => ['Content-Type' => 'application/json'],
+            'body' => '123',
+        ]);
+        $this->assertGreaterThanOrEqual(400, $response->getStatusCode());
+        $alive = $this->client->get('/');
+        $this->assertSame(200, $alive->getStatusCode(), 'Server must survive a scalar JSON body');
+    }
+
+    /** An unknown method override makes Method::from() throw a ValueError, an Error not an Exception */
+    public function testInvalidMethodOverrideDoesNotCrashServer(): void
+    {
+        $response = $this->client->post('/', [
+            'headers' => ['X-HTTP-Method-Override' => 'FOO'],
+        ]);
+        $this->assertGreaterThanOrEqual(400, $response->getStatusCode());
+        $alive = $this->client->get('/');
+        $this->assertSame(200, $alive->getStatusCode(), 'Server must survive an invalid method override');
+    }
+
+    /** A Raw-Post-Data header must not be honoured as the request body (empty real body) */
+    public function testRawPostDataHeaderCannotInjectBody(): void
+    {
+        $response = $this->client->put('/ticket', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Raw-Post-Data' => '{"title":"x","qty":1}',
+            ],
+        ]);
+        $this->assertSame(400, $response->getStatusCode());
+        $alive = $this->client->get('/');
+        $this->assertSame(200, $alive->getStatusCode(), 'Server must survive a Raw-Post-Data header');
+    }
 }

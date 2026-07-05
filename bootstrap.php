@@ -58,7 +58,7 @@ return static function (string $context, string $name, string $ip, int $port, ar
             $app->responder->setResponse($response);
             $ro->transfer($app->responder, []);
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $app->error->transfer($e, $request, $response);
         }
     });

@@ -8,9 +8,9 @@ use BEAR\Resource\Code;
 use BEAR\Resource\Exception\BadRequestException as BadRequest;
 use BEAR\Resource\Exception\ResourceNotFoundException as NotFound;
 use BEAR\Resource\Exception\ServerErrorException as ServerError;
-use Exception;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
+use Throwable;
 
 use function array_key_exists;
 use function error_log;
@@ -26,7 +26,7 @@ use const PHP_EOL;
  */
 final readonly class Error
 {
-    public function transfer(Exception $e, Request $request, Response $response): void
+    public function transfer(Throwable $e, Request $request, Response $response): void
     {
         $this->log($request, $e);
         $response->header('content-type', 'text/plain');
@@ -42,7 +42,7 @@ final readonly class Error
         $response->end('500 Server Error' . PHP_EOL);
     }
 
-    private function log(Request $request, Exception $e): void
+    private function log(Request $request, Throwable $e): void
     {
         error_log(
             (string) json_encode(
@@ -60,7 +60,7 @@ final readonly class Error
         );
     }
 
-    private function isCodeExists(Exception $e): bool
+    private function isCodeExists(Throwable $e): bool
     {
         if (! ($e instanceof NotFound) && ! ($e instanceof BadRequest) && ! ($e instanceof ServerError)) {
             return false;
