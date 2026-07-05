@@ -43,15 +43,15 @@ return static function (string $context, string $name, string $ip, int $port, ar
             return;
         }
 
-        $match = $app->router->match(
-            [
-                '_GET' => $request->get ?? [],
-                '_POST' => $request->post ?? []
-            ],
-            $server
-        );
-
         try {
+            $match = $app->router->match(
+                [
+                    '_GET' => $request->get ?? [],
+                    '_POST' => $request->post ?? []
+                ],
+                $server
+            );
+
             $ro = $app->resource->newRequest(Method::from($match->method), $match->path, $match->query)();
 
             $app->responder->setResponse($response);

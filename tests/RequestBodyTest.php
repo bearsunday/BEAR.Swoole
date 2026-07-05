@@ -44,4 +44,25 @@ class RequestBodyTest extends TestCase
 }
 ', (string) $response->getBody());
     }
+
+    public function testMalformedJsonReturns400(): void
+    {
+        $response = $this->client->put('/ticket', [
+            'headers' => ['Content-Type' => 'application/json'],
+            'body' => '{"title":}',
+        ]);
+        $this->assertSame(400, $response->getStatusCode());
+        $alive = $this->client->get('/');
+        $this->assertSame(200, $alive->getStatusCode(), 'Server must survive a malformed JSON request');
+    }
+
+    public function testEmptyJsonBodyReturns400(): void
+    {
+        $response = $this->client->put('/ticket', [
+            'headers' => ['Content-Type' => 'application/json'],
+        ]);
+        $this->assertSame(400, $response->getStatusCode());
+        $alive = $this->client->get('/');
+        $this->assertSame(200, $alive->getStatusCode(), 'Server must survive an empty JSON request');
+    }
 }
