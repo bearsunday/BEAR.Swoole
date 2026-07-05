@@ -37,13 +37,14 @@ return static function (string $context, string $name, string $ip, int $port, ar
         // Seed the context for potential PSR-7 use. Conversion is lazy.
         $server = SwooleRequestProvider::seed($request);
 
-        // Check ETag from coroutine context directly.
-        if ($app->httpCache->isNotModified()) {
-            $app->httpCache->transfer($response);
-            return;
-        }
-
         try {
+            // Check ETag from coroutine context directly.
+            if ($app->httpCache->isNotModified()) {
+                $app->httpCache->transfer($response);
+
+                return;
+            }
+
             $match = $app->router->match(
                 [
                     '_GET' => $request->get ?? [],

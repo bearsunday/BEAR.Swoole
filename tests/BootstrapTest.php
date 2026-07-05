@@ -38,6 +38,18 @@ class BootstrapTest extends TestCase
         $this->assertSame('', (string) $response2->getBody());
     }
 
+    /** RFC 9110 ETags (e.g. W/"abc") contain PSR-6 reserved characters and must not crash the server */
+    public function testRfc9110EtagIsHandled(): void
+    {
+        $response = $this->client->get('/cache', [
+            'headers' => ['If-None-Match' => 'W/"abc"'],
+            'http_errors' => false,
+        ]);
+        $this->assertSame(200, $response->getStatusCode());
+        $alive = $this->client->get('/');
+        $this->assertSame(200, $alive->getStatusCode(), 'Server must survive an RFC 9110 formatted ETag');
+    }
+
 
 
     /** test @CookieParam, @FormParam, @QueryParam, @ServerParam annotated web context injection */

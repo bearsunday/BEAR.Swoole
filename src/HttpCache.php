@@ -6,6 +6,7 @@ namespace BEAR\Swoole;
 
 use ArrayObject;
 use BEAR\QueryRepository\ResourceStorageInterface;
+use Psr\Cache\InvalidArgumentException;
 use Swoole\Coroutine;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -23,8 +24,17 @@ final readonly class HttpCache implements HttpCacheInterface
     public function isNotModified(): bool
     {
         $etag = $this->getIfNoneMatch();
+        if ($etag === null) {
+            return false;
+        }
 
-        return $etag !== null && $this->storage->hasEtag($etag);
+        try {
+            return $this->storage->hasEtag($etag);
+        } catch (InvalidArgumentException) {
+            // RFC 9110 ETags (e.g. W/"abc") contain PSR-6 reserved characters;
+            // an ETag the pool cannot express is simply not a cache hit.
+            return false;
+        }
     }
 
     private function getIfNoneMatch(): ?string
