@@ -99,6 +99,16 @@ final readonly class SwooleServerRequestConverter
             $server[$key] = $value;
         }
 
+        // Swoole does not populate php://input, so expose the raw request body
+        // via HTTP_RAW_POST_DATA for BEAR.Sunday's router (JSON/form PUT/PATCH/DELETE).
+        // Drop any client-supplied "Raw-Post-Data" header first: it maps to the same
+        // key and would otherwise let a header inject the request body on an empty body.
+        unset($server['HTTP_RAW_POST_DATA']);
+        $rawContent = $request->rawContent();
+        if (is_string($rawContent) && $rawContent !== '') {
+            $server['HTTP_RAW_POST_DATA'] = $rawContent;
+        }
+
         return $server;
     }
 

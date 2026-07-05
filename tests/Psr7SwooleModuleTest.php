@@ -34,6 +34,31 @@ class Psr7SwooleModuleTest extends TestCase
         $this->assertSame('value', $server['HTTP_X_CUSTOM']);
     }
 
+    public function testToGlobalsExposesRawBodyAsHttpRawPostData(): void
+    {
+        $request = new FakeRawRequest();
+        $request->server = ['request_method' => 'PUT'];
+        $request->header = ['content-type' => 'application/json'];
+        $request->rawBody = '{"title":"x"}';
+
+        $server = SwooleServerRequestConverter::toGlobals($request);
+
+        $this->assertSame('{"title":"x"}', $server['HTTP_RAW_POST_DATA']);
+    }
+
+    public function testToGlobalsDropsSpoofedRawPostDataHeader(): void
+    {
+        $request = new FakeRawRequest();
+        $request->server = ['request_method' => 'PUT'];
+        // Maps to HTTP_RAW_POST_DATA; must not be honoured as the body.
+        $request->header = ['raw-post-data' => 'injected'];
+        $request->rawBody = false;
+
+        $server = SwooleServerRequestConverter::toGlobals($request);
+
+        $this->assertArrayNotHasKey('HTTP_RAW_POST_DATA', $server);
+    }
+
     public function testCreateFromSwooleWithHttps(): void
     {
         /** @phpstan-ignore-next-line function.notFound */
