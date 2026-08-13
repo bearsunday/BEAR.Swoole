@@ -6,6 +6,7 @@ namespace BEAR\Swoole;
 
 use ArrayObject;
 use BEAR\Swoole\Exception\NotInCoroutineException;
+use Override;
 use Psr\Http\Message\ServerRequestInterface;
 use Ray\Di\ProviderInterface;
 use Ray\HttpMessage\RequestProviderInterface;
@@ -28,6 +29,7 @@ final class SwooleRequestProvider implements ProviderInterface, RequestProviderI
     /**
      * {@inheritdoc}
      */
+    #[Override]
     public function get(): ServerRequestInterface
     {
         return $this->proxy ??= new SwooleRequestProxy($this->converter);

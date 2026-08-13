@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BEAR\Swoole;
 
+use Override;
 use Psr\Http\Message\UriInterface;
 use Ray\Di\ProviderInterface;
 
@@ -18,6 +19,7 @@ final readonly class SwooleUriProvider implements ProviderInterface
     ) {
     }
 
+    #[Override]
     public function get(): UriInterface
     {
         return $this->requestProvider->get()->getUri();

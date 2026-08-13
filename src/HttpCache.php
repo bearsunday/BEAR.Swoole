@@ -6,6 +6,7 @@ namespace BEAR\Swoole;
 
 use ArrayObject;
 use BEAR\QueryRepository\ResourceStorageInterface;
+use Override;
 use Psr\Cache\InvalidArgumentException;
 use Swoole\Coroutine;
 use Swoole\Http\Request;
@@ -21,6 +22,7 @@ final readonly class HttpCache implements HttpCacheInterface
     ) {
     }
 
+    #[Override]
     public function isNotModified(): bool
     {
         $etag = $this->getIfNoneMatch();
@@ -55,6 +57,7 @@ final readonly class HttpCache implements HttpCacheInterface
         return is_string($etag) ? $etag : null;
     }
 
+    #[Override]
     public function transfer(Response $response): void
     {
         $response->status(304);

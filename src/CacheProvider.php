@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BEAR\Swoole;
 
+use Override;
 use Ray\Di\ProviderInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -13,6 +14,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  */
 final readonly class CacheProvider implements ProviderInterface
 {
+    #[Override]
     public function get(): ArrayAdapter
     {
         return new ArrayAdapter(0, false);

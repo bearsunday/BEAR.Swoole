@@ -6,6 +6,7 @@ namespace BEAR\Swoole;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Extension\Transfer\TransferInterface;
+use Override;
 use Swoole\Http\Response;
 
 /**
@@ -15,6 +16,7 @@ final class Responder implements TransferInterface
 {
     private Response $response;
 
+    #[Override]
     public function __invoke(ResourceObject $ro, array $server): void
     {
         unset($server);
