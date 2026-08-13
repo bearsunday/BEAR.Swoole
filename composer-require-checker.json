@@ -1,5 +1,3 @@
 {
-  "symbol-whitelist": [
-    "BEAR\\QueryRepository\\ServerContextInterface"
-  ]
+  "symbol-whitelist": []
 }
