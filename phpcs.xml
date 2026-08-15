@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="PHP_CodeSniffer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+    <!-- Generated at runtime: AOP proxies and compiled scripts of the test application -->
+    <exclude-pattern>tests/Fake/var/*</exclude-pattern>
     <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
     <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
     <rule ref="Generic.Strings.UnnecessaryStringConcat"/>

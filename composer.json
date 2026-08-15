@@ -49,7 +49,7 @@
             "BEAR\\Swoole\\": [
                 "tests/"
             ],
-            "BEAR\\Skeleton\\": [
+            "BEAR\\SwooleFake\\": [
                 "tests/Fake/src/"
             ]
         }

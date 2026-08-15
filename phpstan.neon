@@ -3,3 +3,6 @@ parameters:
   paths:
     - src
     - tests
+  excludePaths:
+    # Generated at runtime: AOP proxies and compiled scripts of the test application
+    - tests/Fake/var/*

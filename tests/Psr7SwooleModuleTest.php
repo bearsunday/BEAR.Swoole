@@ -280,7 +280,7 @@ class Psr7SwooleModuleTest extends TestCase
                 {
                     // SwooleModule must be installed first (Ray.Di uses first-wins for bindings)
                     $this->install(new SwooleModule());
-                    $this->install(new ResourceModule('BEAR\Skeleton'));
+                    $this->install(new ResourceModule('BEAR\SwooleFake'));
                 }
             };
             $injector = new Injector($module);

@@ -5,3 +5,4 @@
 /vendor-bin/tools/vendor/
 /build/
 /coverage.xml
+/tests/Fake/var/
