@@ -50,6 +50,8 @@ final class SwooleModule extends AbstractModule
         $this->bind()->annotatedWith(UploadFiles::class)->toProvider(SwooleUploadfilesProvider::class);
         $this->bind(TransferInterface::class)->to(Responder::class);
         $this->bind(Error::class);
+        // Explicit: CompiledInjector resolves only what was compiled, and never auto-binds.
+        $this->bind(App::class);
         // Use Swoole-aware NamedParamMetas for web context parameters (must be installed before ResourceModule)
         $this->bind(NamedParamMetasInterface::class)->to(SwooleNamedParamMetas::class);
         // Server context for BEAR.QueryRepository coroutine-safe operation
