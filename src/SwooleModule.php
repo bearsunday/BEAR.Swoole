@@ -11,6 +11,7 @@ use BEAR\Resource\ResourceClient;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Sunday\Extension\Transfer\TransferInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Override;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,6 +27,7 @@ use Ray\PsrCacheModule\Annotation\Shared;
 
 final class SwooleModule extends AbstractModule
 {
+    #[Override]
     protected function configure(): void
     {
         $this->bind(ResourceInterface::class)->to(ResourceClient::class)->in(Scope::SINGLETON);
@@ -50,9 +52,7 @@ final class SwooleModule extends AbstractModule
         $this->bind(Error::class);
         // Use Swoole-aware NamedParamMetas for web context parameters (must be installed before ResourceModule)
         $this->bind(NamedParamMetasInterface::class)->to(SwooleNamedParamMetas::class);
-        // Server context for BEAR.QueryRepository coroutine-safe operation (requires BEAR.QueryRepository 1.14+)
-        if (interface_exists(ServerContextInterface::class)) {
-            $this->bind(ServerContextInterface::class)->to(SwooleServerContext::class);
-        }
+        // Server context for BEAR.QueryRepository coroutine-safe operation
+        $this->bind(ServerContextInterface::class)->to(SwooleServerContext::class);
     }
 }

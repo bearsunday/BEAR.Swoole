@@ -6,6 +6,7 @@ namespace BEAR\Swoole;
 
 use ArrayObject;
 use BEAR\Swoole\Exception\RequestNotSeededException;
+use Override;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -52,12 +53,14 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function getProtocolVersion(): string
     {
         return $this->getRequest()->getProtocolVersion();
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function withProtocolVersion(string $version): ServerRequestInterface
     {
         return $this->getRequest()->withProtocolVersion($version); // @phpstan-ignore return.type
@@ -68,12 +71,14 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function getHeaders(): array
     {
         return $this->getRequest()->getHeaders();
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function hasHeader(string $name): bool
     {
         return $this->getRequest()->hasHeader($name);
@@ -84,12 +89,14 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function getHeader(string $name): array
     {
         return $this->getRequest()->getHeader($name);
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function getHeaderLine(string $name): string
     {
         return $this->getRequest()->getHeaderLine($name);
@@ -100,6 +107,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function withHeader(string $name, $value): ServerRequestInterface
     {
         return $this->getRequest()->withHeader($name, $value); // @phpstan-ignore return.type
@@ -110,54 +118,63 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function withAddedHeader(string $name, $value): ServerRequestInterface
     {
         return $this->getRequest()->withAddedHeader($name, $value); // @phpstan-ignore return.type
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function withoutHeader(string $name): ServerRequestInterface
     {
         return $this->getRequest()->withoutHeader($name); // @phpstan-ignore return.type
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function getBody(): StreamInterface
     {
         return $this->getRequest()->getBody();
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function withBody(StreamInterface $body): ServerRequestInterface
     {
         return $this->getRequest()->withBody($body); // @phpstan-ignore return.type
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function getRequestTarget(): string
     {
         return $this->getRequest()->getRequestTarget();
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function withRequestTarget(string $requestTarget): ServerRequestInterface
     {
         return $this->getRequest()->withRequestTarget($requestTarget); // @phpstan-ignore return.type
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function getMethod(): string
     {
         return $this->getRequest()->getMethod();
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function withMethod(string $method): ServerRequestInterface
     {
         return $this->getRequest()->withMethod($method); // @phpstan-ignore return.type
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function getUri(): UriInterface
     {
         return $this->getRequest()->getUri();
@@ -168,6 +185,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function withUri(UriInterface $uri, bool $preserveHost = false): ServerRequestInterface
     {
         return $this->getRequest()->withUri($uri, $preserveHost); // @phpstan-ignore return.type
@@ -178,6 +196,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function getServerParams(): array
     {
         return $this->getRequest()->getServerParams();
@@ -188,6 +207,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function getCookieParams(): array
     {
         return $this->getRequest()->getCookieParams();
@@ -198,6 +218,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function withCookieParams(array $cookies): ServerRequestInterface
     {
         return $this->getRequest()->withCookieParams($cookies); // @phpstan-ignore return.type
@@ -208,6 +229,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function getQueryParams(): array
     {
         return $this->getRequest()->getQueryParams();
@@ -218,6 +240,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function withQueryParams(array $query): ServerRequestInterface
     {
         return $this->getRequest()->withQueryParams($query); // @phpstan-ignore return.type
@@ -228,6 +251,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function getUploadedFiles(): array
     {
         return $this->getRequest()->getUploadedFiles();
@@ -238,6 +262,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
     {
         return $this->getRequest()->withUploadedFiles($uploadedFiles); // @phpstan-ignore return.type
@@ -248,6 +273,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function getParsedBody()
     {
         return $this->getRequest()->getParsedBody();
@@ -258,6 +284,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function withParsedBody($data): ServerRequestInterface
     {
         return $this->getRequest()->withParsedBody($data); // @phpstan-ignore return.type
@@ -268,6 +295,7 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function getAttributes(): array
     {
         return $this->getRequest()->getAttributes();
@@ -278,18 +306,21 @@ final readonly class SwooleRequestProxy implements ServerRequestInterface
      *
      * @codeCoverageIgnore
      */
+    #[Override]
     public function getAttribute(string $name, mixed $default = null)
     {
         return $this->getRequest()->getAttribute($name, $default);
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function withAttribute(string $name, mixed $value): ServerRequestInterface
     {
         return $this->getRequest()->withAttribute($name, $value); // @phpstan-ignore return.type
     }
 
     /** @codeCoverageIgnore */
+    #[Override]
     public function withoutAttribute(string $name): ServerRequestInterface
     {
         return $this->getRequest()->withoutAttribute($name); // @phpstan-ignore return.type

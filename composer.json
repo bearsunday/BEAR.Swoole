@@ -6,7 +6,7 @@
         "php": "^8.2",
         "ext-swoole": "^6.1",
         "bear/app-meta": "^1.6",
-        "bear/query-repository": "^1.8.4",
+        "bear/query-repository": "^1.15",
         "bear/resource": "^1.31",
         "bear/sunday": "^1.6",
         "nyholm/psr7": "^1.8",
@@ -14,14 +14,12 @@
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0 || ^2.0",
         "ray/aop": "^2.18",
-        "ray/di": "^2.14",
+        "ray/di": "^2.23",
         "ray/input-query": "^1.0",
         "ray/psr-cache-module": "^1.3",
         "ray/psr7-module": "^1.4",
-        "symfony/cache": "^5.4 || ^6.0 || ^7.0"
-    },
-    "suggest": {
-        "bear/query-repository": "^1.14 for ServerContextInterface support (coroutine-safe cache vary)"
+        "symfony/cache": "^5.4 || ^6.0 || ^7.0",
+        "symfony/polyfill-php83": "^1.28"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4",
@@ -89,7 +87,8 @@
             "rm -rf tests/tmp/*.php"
         ],
         "sa": [
-            "./vendor/bin/phpstan analyse -c phpstan.neon"
+            "./vendor/bin/phpstan analyse -c phpstan.neon",
+            "./vendor/bin/psalm --show-info=false"
         ],
         "metrics": [
             "./vendor/bin/phpmetrics --report-html=build/metrics --exclude=Exception --junit=build/junit.xml src"
