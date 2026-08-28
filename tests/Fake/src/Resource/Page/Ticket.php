@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Skeleton\Resource\Page;
+namespace BEAR\SwooleFake\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
 

@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace BEAR\SwooleFake\Resource\Page;
 
-use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\ResourceObject;
 
-#[Cacheable]
-class Cache extends ResourceObject
+class Index extends ResourceObject
 {
+    /** @var array{greeting: string} */
+    public $body;
+
     public function onGet(string $name = 'BEAR.Sunday'): static
     {
         $this->body = [
