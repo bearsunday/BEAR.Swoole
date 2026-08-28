@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-08-29
+
+### Changed
+- Build the object graph in each worker after the fork, instead of once in the master before it.
+- Bind every ResourceObject up front so no AOP proxy is written while requests are being served.
+- Print the startup banner from the last worker to finish booting, so it signals readiness.
+- Raise dependency floors coroutine safety relies on: `ray/di` to `^2.23`, `bear/query-repository` to `^1.15`.
+
+### Added
+- Respond 503 with `Retry-After` while a worker is still building its object graph.
+- PHP 8.5 in the CI test matrix.
+
 ## [0.7.1] - 2026-07-06
 
 ### Fixed
