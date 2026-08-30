@@ -9,7 +9,6 @@ use BEAR\Resource\Method;
 use BEAR\Swoole\App;
 use BEAR\Swoole\SwooleModule;
 use BEAR\Swoole\SwooleRequestProvider;
-use Ray\PsrCacheModule\Annotation\CacheDir;
 use Ray\Di\Injector;
 use Swoole\Coroutine;
 use Swoole\Atomic;
@@ -33,15 +32,11 @@ return static function (string $context, string $name, string $ip, int $port, ar
     $module->install(new ResourceObjectModule($meta->getResourceListGenerator()));
     $classDir = $meta->tmpDir;
 
-    // Done in the master, once, for its side effects on disk:
-    //  - building the container weaves the aspects, and Ray\Aop\Compiler writes those proxies
-    //    with file_exists-then-write and no lock
-    //  - resolving #[CacheDir] creates the cache directory, whose provider throws rather than
-    //    re-checking when it loses a concurrent mkdir (bearsunday/BEAR.Package#505)
-    // Both would otherwise be raced by workers starting at once. Neither leaves an instance
-    // behind that a worker could inherit: the container instantiates nothing, and the cache
-    // directory is a string.
-    (new Injector($module, $classDir))->getInstance('', CacheDir::class);
+    // Done in the master, once, for its side effect on disk: building the container weaves
+    // the aspects, and Ray\Aop\Compiler writes those proxies with file_exists-then-write and
+    // no lock. Workers starting at once would race those writes. No instance is left behind
+    // for a worker to inherit: the container instantiates nothing.
+    new Injector($module, $classDir);
 
     $app = null;
 

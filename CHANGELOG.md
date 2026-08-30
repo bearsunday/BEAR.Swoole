@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Require `bear/package` >=1.24, whose fixed cache dir provider makes the master-side `#[CacheDir]` pre-resolution redundant.
+
 ## [0.8.0] - 2026-08-29
 
 ### Changed
