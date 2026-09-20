@@ -406,4 +406,46 @@ class Psr7SwooleModuleTest extends TestCase
             $this->assertSame('foo=bar&baz=qux', $serverRequest->getUri()->getQuery());
         });
     }
+
+    /**
+     * Guards the specific way the original bug shipped: Responder::__invoke reading a
+     * `$this->response` field instead of the seeded coroutine context. seed()/find() alone
+     * (below) can't catch a regression that reintroduces such a field but leaves seed()
+     * untouched, since that test never calls __invoke.
+     */
+    public function testResponderCarriesNoMutablePerRequestState(): void
+    {
+        $this->assertSame([], (new \ReflectionClass(Responder::class))->getProperties());
+    }
+
+    public function testResponderReadsResponseFromOwnCoroutineContext(): void
+    {
+        /** @phpstan-ignore-next-line function.notFound */
+        \Co\run(function (): void {
+            $iterations = 50;
+            $wg = new WaitGroup();
+            $matched = [];
+
+            for ($i = 0; $i < $iterations; $i++) {
+                $wg->add();
+                $index = $i;
+                go(static function () use (&$matched, $index, $wg): void {
+                    $response = new \Swoole\Http\Response();
+                    Responder::seed($response);
+
+                    // Widen the window in which a shared field would be clobbered by a sibling.
+                    usleep(random_int(0, 1000));
+
+                    $matched[$index] = CoroutineContextFinder::find(\Swoole\Http\Response::class, \Swoole\Http\Response::class) === $response;
+                    $wg->done();
+                });
+            }
+
+            $wg->wait();
+
+            // A go() closure that silently never ran must fail the test, not vacuously pass it.
+            $this->assertCount($iterations, $matched);
+            $this->assertNotContains(false, $matched, 'Every coroutine must read back its own seeded Response, never a sibling\'s');
+        });
+    }
 }

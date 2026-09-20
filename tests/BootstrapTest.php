@@ -74,4 +74,29 @@ class BootstrapTest extends TestCase
 }
 ', (string) $response->getBody());
     }
+
+    /**
+     * Responder used to keep the Swoole response in a mutable instance field shared by the
+     * whole worker. A request whose rendering yields the coroutine (e.g. slow I/O) could have
+     * its response overwritten by a concurrent request that finishes first, then write to the
+     * wrong client's connection when it resumed. Both requests below are queued on the same
+     * curl multi handle and only start moving once wait() drives it, so the server's single
+     * worker ends up running both coroutines concurrently and interleaves them exactly that
+     * way; each response must still carry its own id.
+     */
+    public function testConcurrentResponsesAreNotCrossed(): void
+    {
+        $slow = $this->client->getAsync('/slow', ['query' => ['id' => 'slow', 'sleep' => '0.3']]);
+        $fast = $this->client->getAsync('/slow', ['query' => ['id' => 'fast']]);
+
+        /** @var \Psr\Http\Message\ResponseInterface $slowResponse */
+        $slowResponse = $slow->wait();
+        /** @var \Psr\Http\Message\ResponseInterface $fastResponse */
+        $fastResponse = $fast->wait();
+
+        $this->assertSame(200, $slowResponse->getStatusCode());
+        $this->assertSame(200, $fastResponse->getStatusCode());
+        $this->assertSame(['id' => 'slow'], json_decode((string) $slowResponse->getBody(), true));
+        $this->assertSame(['id' => 'fast'], json_decode((string) $fastResponse->getBody(), true));
+    }
 }
