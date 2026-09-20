@@ -23,11 +23,14 @@
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4",
-        "bear/package": "^1.14",
+        "bear/package": "^1.24",
         "guzzlehttp/guzzle": "^7.5",
         "phpunit/phpunit": "^10.0 || ^11.0",
         "roave/security-advisories": "dev-latest",
         "symfony/process": "^5.0 || ^6.0 || ^7.0"
+    },
+    "conflict": {
+        "bear/package": "<1.24"
     },
     "license": "MIT",
     "authors": [
