@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-09-20
+
+### Fixed
+- Stop `Responder` from sharing the Swoole response across concurrent coroutines: a per-worker mutable field could let one client's response be written to another's already-closed connection when rendering yielded (e.g. an I/O-bound renderer). The response now travels through coroutine-local context, mirroring the existing request-seeding pattern.
+
 ## [0.8.0] - 2026-08-29
 
 ### Changed
