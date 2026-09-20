@@ -7,6 +7,7 @@ use BEAR\Package\Module;
 use BEAR\Package\Module\ResourceObjectModule;
 use BEAR\Resource\Method;
 use BEAR\Swoole\App;
+use BEAR\Swoole\Responder;
 use BEAR\Swoole\SwooleModule;
 use BEAR\Swoole\SwooleRequestProvider;
 use Ray\PsrCacheModule\Annotation\CacheDir;
@@ -82,8 +83,10 @@ return static function (string $context, string $name, string $ip, int $port, ar
             return;
         }
 
-        // Seed the context for potential PSR-7 use. Conversion is lazy.
+        // Seed the context for potential PSR-7 use (conversion is lazy) and for the
+        // Responder, which must write to this coroutine's own response, not a shared field.
         $server = SwooleRequestProvider::seed($request);
+        Responder::seed($response);
 
         try {
             // Check ETag from coroutine context directly.
@@ -103,7 +106,6 @@ return static function (string $context, string $name, string $ip, int $port, ar
 
             $ro = $app->resource->newRequest(Method::from($match->method), $match->path, $match->query)();
 
-            $app->responder->setResponse($response);
             $ro->transfer($app->responder, []);
         } catch (Throwable $e) {
             $app->error->transfer($e, $request, $response);
