@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace BEAR\Swoole;
 
 use BEAR\Resource\Module\ResourceModule;
+use BEAR\Resource\Module\ResourceObjectModule;
 use BEAR\Resource\ResourceInterface;
+use BEAR\SwooleFake\Resource\Page\WebContext;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -281,6 +283,7 @@ class Psr7SwooleModuleTest extends TestCase
                     // SwooleModule must be installed first (Ray.Di uses first-wins for bindings)
                     $this->install(new SwooleModule());
                     $this->install(new ResourceModule('BEAR\SwooleFake'));
+                    $this->install(new ResourceObjectModule([WebContext::class]));
                 }
             };
             $injector = new Injector($module);
